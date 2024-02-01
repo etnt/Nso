@@ -1,4 +1,4 @@
-package se.kruskakli.nso.data
+package se.kruskakli.nso.data.packages
 
 import com.squareup.moshi.Moshi
 import retrofit2.Retrofit
@@ -6,7 +6,6 @@ import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.moshi.MoshiConverterFactory
-import se.kruskakli.nso.data.packages.PackagesApi
 
 // Example: 
 //

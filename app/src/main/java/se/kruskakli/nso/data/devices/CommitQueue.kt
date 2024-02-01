@@ -1,5 +1,7 @@
 package se.kruskakli.nsopackages.data.devices
 
+import com.squareup.moshi.Json
+
 data class CommitQueue(
-    val queueLength: Int
+    @Json(name = "queue-length") val queueLength: Int
 )

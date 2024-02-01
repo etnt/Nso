@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import se.kruskakli.nso.data.RetrofitInstance
+import se.kruskakli.nso.data.packages.RetrofitInstance
 import se.kruskakli.nso.data.packages.toPackageUi
 import se.kruskakli.nso.presentation.MainScreen
 import se.kruskakli.nso.ui.theme.NsoTheme
