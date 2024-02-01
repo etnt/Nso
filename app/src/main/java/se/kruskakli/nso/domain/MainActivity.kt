@@ -16,10 +16,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import se.kruskakli.nsopackages.data.RetrofitInstance
-import se.kruskakli.nsopackages.data.toPackageUi
-import se.kruskakli.nsopackages.presentation.MainScreen
-import se.kruskakli.nsopackages.ui.theme.NsoPackagesTheme
+import se.kruskakli.nso.data.RetrofitInstance
+import se.kruskakli.nso.data.packages.toPackageUi
+import se.kruskakli.nso.presentation.MainScreen
+import se.kruskakli.nso.ui.theme.NsoTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
             }
             var nsopackages by remember { mutableStateOf(listOf<PackageUi>()) }
 
-            NsoPackagesTheme {
+            NsoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

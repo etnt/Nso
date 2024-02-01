@@ -1,6 +1,6 @@
 package se.kruskakli.nso.data.packages
 
-import se.kruskakli.nsopackages.domain.PackageUi
+import se.kruskakli.nso.domain.PackageUi
 
 fun Package.toPackageUi(): PackageUi {
     return PackageUi(
