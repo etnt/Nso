@@ -12,14 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import se.kruskakli.nso.data.packages.RetrofitInstance
-import se.kruskakli.nso.data.packages.toPackageUi
 import se.kruskakli.nso.presentation.HomeScreen
-import se.kruskakli.nso.presentation.MainScreen
 import se.kruskakli.nso.ui.theme.NsoTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,13 +20,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-            var ipFieldState by remember {
-                mutableStateOf("10.147.40.166")
-            }
-            var portFieldState by remember {
-                mutableStateOf("8080")
-            }
             var nsopackages by remember { mutableStateOf(listOf<PackageUi>()) }
+
+            var name by remember { mutableStateOf("Blueberry") }
+            var ipAddress by remember { mutableStateOf("10.147.40.166") }
+            var port by remember { mutableStateOf("8080")}
 
             NsoTheme {
                 // A surface container using the 'background' color from the theme
@@ -41,7 +32,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen()
+                    HomeScreen(
+                        name,
+                        ipAddress,
+                        port,
+                        { _name, _ip, _port ->
+                            name = _name
+                            ipAddress = _ip
+                            port = _port
+                        }
+                    )
                     /*
                     MainScreen(
                         ip = ipFieldState,

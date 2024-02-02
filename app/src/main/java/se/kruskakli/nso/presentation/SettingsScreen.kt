@@ -17,18 +17,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    name: String = "Blueberry",
-    ip: String = "10.x.x.x",
-    port: String = "8080",
-    onAction: (String, String, String) -> Unit = {_,_,_ -> Unit},
+    name: String,
+    ip: String,
+    port: String,
+    onAction: (String, String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -48,9 +53,13 @@ fun ipPortSettings(
     name: String,
     ip: String,
     port: String,
-    onAction: (String, String, String) -> Unit = {_,_,_ -> Unit},
+    onAction: (String, String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var newName by remember { mutableStateOf(name) }
+    var newIp by remember { mutableStateOf(ip) }
+    var newPort by remember { mutableStateOf(port) }
+
     Card(
         modifier = Modifier
             .padding(4.dp),
@@ -65,9 +74,9 @@ fun ipPortSettings(
                 .padding(start = 8.dp, end = 8.dp)
         ) {
             TextField(
-                value = name,
+                value = newName,
                 label = { Text(text = "Name:") },
-                onValueChange = { onAction(it, ip, port) },
+                onValueChange = { newName = it },
                 modifier = Modifier
                     .fillMaxWidth(),
                 // To remove the ugly underline
@@ -84,9 +93,9 @@ fun ipPortSettings(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 TextField(
-                    value = ip,
+                    value = newIp,
                     label = { Text(text = "IP Address:") },
-                    onValueChange = { onAction(name, it, port) },
+                    onValueChange = { newIp = it },
                     //modifier = Modifier
                     //    .fillMaxWidth(),
                     // To remove the ugly underline
@@ -98,9 +107,9 @@ fun ipPortSettings(
                     )
                 )
                 TextField(
-                    value = port,
+                    value = newPort,
                     label = { Text(text = "Port:") },
-                    onValueChange = { onAction(name, ip, it) },
+                    onValueChange = { newPort = it },
                     //modifier = Modifier
                     //    .fillMaxWidth(),
                     // To remove the ugly underline
@@ -111,6 +120,9 @@ fun ipPortSettings(
                         disabledIndicatorColor = Color.Transparent
                     )
                 )
+            }
+            Button(onClick = { onAction(newName, newIp, newPort) }) {
+                Text("Apply Changes")
             }
         }
 

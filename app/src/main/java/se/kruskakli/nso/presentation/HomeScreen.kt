@@ -40,12 +40,13 @@ import se.kruskakli.topbarexample.ui.RememberPackages
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    name: String,
+    ipAddress: String,
+    port: String,
+    onSettingsChange: (String, String, String) -> Unit
+) {
     var page by remember { mutableStateOf(TabPage.Home) }
-
-    var name by remember { mutableStateOf("Blueberry") }
-    var ipAddress by remember { mutableStateOf("10.147.40.166") }
-    var port by remember { mutableStateOf("8080")}
 
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
@@ -61,14 +62,10 @@ fun HomeScreen() {
             Divider()
             when (page) {
                 TabPage.Settings -> {
-                    SettingsScreen(name, ipAddress, port, { _name, _ip, _port ->
-                        name = _name
-                        ipAddress = _ip
-                        port = _port
-                    })
+                    SettingsScreen(name, ipAddress, port, onSettingsChange)
                 }
                 TabPage.Packages -> {
-                    Text("Packages Screen")
+                    PackagesScreen(ipAddress, port)
                 }
                 TabPage.Devices -> {
                     Text("Devices Screen")
@@ -146,8 +143,10 @@ fun myTopBar(setScreen: (TabPage) -> Unit) {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen("Blueberry", "10.0.0.1", "8888", { _, _, _ -> })
 }
+*/

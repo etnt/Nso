@@ -19,55 +19,51 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import se.kruskakli.nso.domain.PackageUi
 import se.kruskakli.nso.ui.theme.NsoTheme
 
 @Composable
-fun MainScreen(
-    ip: String = "10.x.x.x",
-    port: String = "8080",
-    packages: List<PackageUi> = listOf<PackageUi>(),
-    ipOnChange: (String) -> Unit = {},
-    portOnChange: (String) -> Unit = {},
-    onAction: () -> Unit = {},
+fun PackagesScreen(
+    ip: String,
+    port: String,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TextField(
-            value = ip,
-            label = { Text(text = "IP Address:") },
-            onValueChange = { ipOnChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp)
+    //var packages by remember { mutableStateOf(listOf<PackageUi>()) }
+/*
+    GlobalScope.launch(Dispatchers.IO) {
+        val api = RetrofitInstance.getApi(
+            "http://${ipFieldState}:${portFieldState}/restconf/data/",
+            "admin",
+            "admin"
         )
-        TextField(
-            value = port,
-            label = { Text(text = "Port:") },
-            onValueChange = { portOnChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp)
-        )
-        Button(onClick = { onAction() }) {
-            Text(text = "Get Packages")
-        }
-        Divider()
-        Packages(packages)
-    }
-}
+        val response = api.getPackages()
+        if (response.tailfNcsPackages != null) {
 
+            withContext(Dispatchers.Main) {
+                val newPackages = mutableListOf<PackageUi>()
+                response.tailfNcsPackages.nsoPackages.forEach() {
+                    Log.d("MainActivity", "BODY: ${it}")
+                    val p = it.toPackageUi()
+                    newPackages.add(p)
+                }
+                nsopackages = newPackages
+            }
+        }
+    }
+
+ */
+}
 
 @Composable
 fun Packages(
@@ -168,10 +164,3 @@ fun PackageField(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    NsoTheme {
-        MainScreen("10.x.x.x", "8080", mutableListOf(), {}, {})
-    }
-}
