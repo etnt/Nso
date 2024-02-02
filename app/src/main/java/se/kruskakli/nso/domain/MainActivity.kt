@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.kruskakli.nso.data.packages.RetrofitInstance
 import se.kruskakli.nso.data.packages.toPackageUi
+import se.kruskakli.nso.presentation.HomeScreen
 import se.kruskakli.nso.presentation.MainScreen
 import se.kruskakli.nso.ui.theme.NsoTheme
 
@@ -40,6 +41,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    HomeScreen()
+                    /*
                     MainScreen(
                         ip = ipFieldState,
                         port = portFieldState,
@@ -70,6 +73,8 @@ class MainActivity : ComponentActivity() {
                             //Log.d("MainActivity", "packages: ${nsopackages}")
                         }
                     )
+                    */
+
                 }
             }
         }
