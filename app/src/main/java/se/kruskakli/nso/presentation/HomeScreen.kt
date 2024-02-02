@@ -43,6 +43,10 @@ import se.kruskakli.topbarexample.ui.RememberPackages
 fun HomeScreen() {
     var page by remember { mutableStateOf(TabPage.Home) }
 
+    var name by remember { mutableStateOf("Blueberry") }
+    var ipAddress by remember { mutableStateOf("10.147.40.166") }
+    var port by remember { mutableStateOf("8080")}
+
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
     ) {padding ->
@@ -57,7 +61,11 @@ fun HomeScreen() {
             Divider()
             when (page) {
                 TabPage.Settings -> {
-                    Text("Settings Screen")
+                    SettingsScreen(name, ipAddress, port, { _name, _ip, _port ->
+                        name = _name
+                        ipAddress = _ip
+                        port = _port
+                    })
                 }
                 TabPage.Packages -> {
                     Text("Packages Screen")
