@@ -51,7 +51,7 @@ fun HomeScreen(
     getNsoPackages: () -> Unit
 ) {
     var page by remember { mutableStateOf(TabPage.Home) }
-
+    Log.d("MainActivity", "HomeScreen: ${page}")
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
     ) {padding ->
@@ -69,7 +69,9 @@ fun HomeScreen(
                     SettingsScreen(name, ipAddress, port, onSettingsChange)
                 }
                 TabPage.Packages -> {
+                    Log.d("MainActivity", "HomeScreen, before PACKAGES: ${nsoPackages}")
                     getNsoPackages()
+                    Log.d("MainActivity", "HomeScreen, after PACKAGES: ${nsoPackages}")
                     PackagesScreen(nsoPackages)
                 }
                 TabPage.Devices -> {

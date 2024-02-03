@@ -1,5 +1,6 @@
 package se.kruskakli.nso.data.packages
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import retrofit2.Retrofit
 import okhttp3.Credentials
@@ -30,6 +31,7 @@ object RetrofitInstance {
         .build()
 
     fun getApi(baseUrl: String, user: String, password: String): PackagesApi {
+        //Log.d("MainActivity", "getApi: ${baseUrl} ${user} ${password}")
         if (api == null) {
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor { chain ->
@@ -44,7 +46,7 @@ object RetrofitInstance {
                 }
                 .addInterceptor(interceptor)
                 .build()
-
+            //Log.d("MainActivity", "getApi: ${okHttpClient} ${api}")
             api = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -52,7 +54,7 @@ object RetrofitInstance {
                 .build()
                 .create(PackagesApi::class.java)
         }
-
+        //Log.d("MainActivity", "getApi, returning: ${api}")
         // In Kotlin, !! is the non-null assertion operator. It converts any
         // value to a non-null type and throws an exception if the value is null.
         return api!!
