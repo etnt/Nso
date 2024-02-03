@@ -143,10 +143,9 @@ fun myTopBar(setScreen: (TabPage) -> Unit) {
     }
 }
 
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
     HomeScreen("Blueberry", "10.0.0.1", "8888", { _, _, _ -> })
 }
-*/

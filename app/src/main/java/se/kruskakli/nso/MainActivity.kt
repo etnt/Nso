@@ -1,4 +1,4 @@
-package se.kruskakli.nso.domain
+package se.kruskakli.nso
 
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,8 +20,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
-            var nsopackages by remember { mutableStateOf(listOf<PackageUi>()) }
+            Log.d("MainActivity", "HERE")
+            //var nsopackages by remember { mutableStateOf(listOf<PackageUi>()) }
 
             var name by remember { mutableStateOf("Blueberry") }
             var ipAddress by remember { mutableStateOf("10.147.40.166") }
@@ -32,16 +33,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen(
-                        name,
-                        ipAddress,
-                        port,
-                        { _name, _ip, _port ->
-                            name = _name
-                            ipAddress = _ip
-                            port = _port
-                        }
-                    )
+                    //Text("Hello, world!")
+
+                    HomeScreen(name, ipAddress, port) { _name, _ip, _port ->
+                        name = _name
+                        ipAddress = _ip
+                        port = _port
+                    }
+
+
                     /*
                     MainScreen(
                         ip = ipFieldState,
