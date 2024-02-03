@@ -35,34 +35,10 @@ import se.kruskakli.nso.ui.theme.NsoTheme
 
 @Composable
 fun PackagesScreen(
-    ip: String,
-    port: String,
+    nsoPackages: List<PackageUi>,
     modifier: Modifier = Modifier
 ) {
-    //var packages by remember { mutableStateOf(listOf<PackageUi>()) }
-/*
-    GlobalScope.launch(Dispatchers.IO) {
-        val api = RetrofitInstance.getApi(
-            "http://${ipFieldState}:${portFieldState}/restconf/data/",
-            "admin",
-            "admin"
-        )
-        val response = api.getPackages()
-        if (response.tailfNcsPackages != null) {
-
-            withContext(Dispatchers.Main) {
-                val newPackages = mutableListOf<PackageUi>()
-                response.tailfNcsPackages.nsoPackages.forEach() {
-                    Log.d("MainActivity", "BODY: ${it}")
-                    val p = it.toPackageUi()
-                    newPackages.add(p)
-                }
-                nsopackages = newPackages
-            }
-        }
-    }
-
- */
+    Packages(nsoPackages)
 }
 
 @Composable

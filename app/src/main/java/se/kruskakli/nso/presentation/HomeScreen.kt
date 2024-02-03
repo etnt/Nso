@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import se.kruskakli.nso.data.packages.NsoPackages
+import se.kruskakli.nso.domain.PackageUi
 import se.kruskakli.topbarexample.ui.RememberDevices
 import se.kruskakli.topbarexample.ui.RememberPackages
 
@@ -44,7 +46,9 @@ fun HomeScreen(
     name: String,
     ipAddress: String,
     port: String,
-    onSettingsChange: (String, String, String) -> Unit
+    onSettingsChange: (String, String, String) -> Unit,
+    nsoPackages: List<PackageUi>,
+    getNsoPackages: () -> Unit
 ) {
     var page by remember { mutableStateOf(TabPage.Home) }
 
@@ -65,7 +69,8 @@ fun HomeScreen(
                     SettingsScreen(name, ipAddress, port, onSettingsChange)
                 }
                 TabPage.Packages -> {
-                    PackagesScreen(ipAddress, port)
+                    getNsoPackages()
+                    PackagesScreen(nsoPackages)
                 }
                 TabPage.Devices -> {
                     Text("Devices Screen")
@@ -143,9 +148,10 @@ fun myTopBar(setScreen: (TabPage) -> Unit) {
     }
 }
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
     HomeScreen("Blueberry", "10.0.0.1", "8888", { _, _, _ -> })
 }
+*/
