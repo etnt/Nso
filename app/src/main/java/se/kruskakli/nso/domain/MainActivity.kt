@@ -36,8 +36,15 @@ class MainActivity : ComponentActivity() {
                 port = newPort
             }
 
+            // If true, fetch data from NSO!
+            var refresh by remember { mutableStateOf(true) }
+            var setRefresh: (Boolean) -> Unit = fun(newRefresh) {
+                refresh = newRefresh
+            }
+
             var nsoPackages by remember { mutableStateOf(listOf<PackageUi>()) }
             var getNsoPackages = fun() {
+                Log.d("MainActivity", "getNsoPackages: ${ipAddress}:${port}")
                 GlobalScope.launch(Dispatchers.IO) {
                     val api = RetrofitInstance.getApi(
                         "http://${ipAddress}:${port}/restconf/data/",
@@ -92,7 +99,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     //Text("Hello, world!")
                     Log.d("MainActivity", "Before enter HomeScreen")
-                    HomeScreen(name, ipAddress, port, applySettings, nsoPackages, getNsoPackages)
+                    HomeScreen(
+                        name, ipAddress, port,
+                        applySettings,
+                        refresh, setRefresh,
+                        nsoPackages, getNsoPackages,
+                        nsoDevices, getNsoDevices
+                    )
 
 
                     /*

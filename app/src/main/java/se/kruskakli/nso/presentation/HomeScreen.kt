@@ -30,12 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import se.kruskakli.nso.data.packages.NsoPackages
 import se.kruskakli.nso.domain.PackageUi
+import se.kruskakli.nso.domain.DeviceUi
 import se.kruskakli.topbarexample.ui.RememberDevices
 import se.kruskakli.topbarexample.ui.RememberPackages
 
@@ -47,8 +46,12 @@ fun HomeScreen(
     ipAddress: String,
     port: String,
     onSettingsChange: (String, String, String) -> Unit,
+    refresh: Boolean,
+    setRefresh: (Boolean) -> Unit,
     nsoPackages: List<PackageUi>,
-    getNsoPackages: () -> Unit
+    getNsoPackages: () -> Unit,
+    nsoDevices: List<DeviceUi>,
+    getNsoDevices: () -> Unit
 ) {
     var page by remember { mutableStateOf(TabPage.Home) }
     Log.d("MainActivity", "HomeScreen: ${page}")
@@ -66,16 +69,25 @@ fun HomeScreen(
             Divider()
             when (page) {
                 TabPage.Settings -> {
+                    // By enter the SettingsScreen, we want to refresh the data.
+                    setRefresh(true)
                     SettingsScreen(name, ipAddress, port, onSettingsChange)
                 }
                 TabPage.Packages -> {
                     Log.d("MainActivity", "HomeScreen, before PACKAGES: ${nsoPackages}")
-                    getNsoPackages()
+                    if (refresh or nsoPackages.isEmpty()) {
+                        getNsoPackages()
+                        setRefresh(false)
+                    }
                     Log.d("MainActivity", "HomeScreen, after PACKAGES: ${nsoPackages}")
                     PackagesScreen(nsoPackages)
                 }
                 TabPage.Devices -> {
-                    Text("Devices Screen")
+                    if (refresh or nsoDevices.isEmpty()) {
+                        getNsoDevices()
+                        setRefresh(false)
+                    }
+                    DevicesScreen(nsoDevices)
                 }
                 TabPage.Home -> {
                     WelcomePage()
