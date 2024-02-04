@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -25,6 +27,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,31 +80,47 @@ fun ipPortSettings(
                 .fillMaxWidth()
                 .padding(start = 8.dp, end = 8.dp)
         ) {
-            TextField(
-                value = newName,
-                label = { Text(text = "Name:") },
-                onValueChange = { newName = it },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                // To remove the ugly underline
-                colors = TextFieldDefaults.textFieldColors(
-                    disabledTextColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                )
-            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalAlignment = Alignment.CenterVertically,
+                //horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextField(
+                    value = newName,
+                    label = { Text(text = "Name:") },
+                    onValueChange = { newName = it },
+                    // To remove the ugly underline
+                    colors = TextFieldDefaults.textFieldColors(
+                        disabledTextColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    )
+                )
+                val text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontSize = 18.sp)) {
+                        append("Save")
+                    }
+                }
+                ClickableText(
+                    text = text,
+                    onClick = { onAction(newName, newIp, newPort) },
+                    style = TextStyle(
+                        color = Color.Blue
+                    ),
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                //horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 TextField(
                     value = newIp,
                     label = { Text(text = "IP Address:") },
                     onValueChange = { newIp = it },
-                    //modifier = Modifier
-                    //    .fillMaxWidth(),
                     // To remove the ugly underline
                     colors = TextFieldDefaults.textFieldColors(
                         disabledTextColor = Color.Transparent,
@@ -120,9 +143,6 @@ fun ipPortSettings(
                         disabledIndicatorColor = Color.Transparent
                     )
                 )
-            }
-            Button(onClick = { onAction(newName, newIp, newPort) }) {
-                Text("Apply Changes")
             }
         }
 

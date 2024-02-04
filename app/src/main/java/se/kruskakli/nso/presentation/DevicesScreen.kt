@@ -123,9 +123,11 @@ fun Alarms(
 ) {
     OutlinedCard(
         shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.LightGray
+        ),
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.LightGray)
             .padding(top = 2.dp, bottom = 2.dp)
     ) {
         Column(
