@@ -19,6 +19,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.kruskakli.nso.data.RetrofitInstance
+import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
 
 class MainActivity : ComponentActivity() {
@@ -54,6 +55,30 @@ class MainActivity : ComponentActivity() {
                                 newPackages.add(p)
                             }
                             nsoPackages = newPackages
+                        }
+                    }
+                }
+            }
+
+            var nsoDevices by remember { mutableStateOf(listOf<DeviceUi>()) }
+            var getNsoDevices = fun() {
+                GlobalScope.launch(Dispatchers.IO) {
+                    val api = RetrofitInstance.getApi(
+                        "http://${ipAddress}:${port}/restconf/data/",
+                        "admin",
+                        "admin"
+                    )
+                    val response = api.getNsoDevices()
+                    if (response.nsoDevices != null) {
+
+                        withContext(Dispatchers.Main) {
+                            val newDevices = mutableListOf<DeviceUi>()
+                            response.nsoDevices.devices.forEach() {
+                                Log.d("MainActivity", "BODY: ${it}")
+                                val p = it.toDeviceUi()
+                                newDevices.add(p)
+                            }
+                            nsoDevices = newDevices
                         }
                     }
                 }

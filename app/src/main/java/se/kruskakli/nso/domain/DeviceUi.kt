@@ -1,6 +1,6 @@
 package se.kruskakli.nso.domain
 
-data class NcsDeviceUI(
+data class DeviceUi(
     val name: String,
     val lastConnected: String,
     val address: String,
@@ -21,6 +21,7 @@ data class NcsDeviceUI(
     )
 
     data class TailfNcsAlarmsAlarmSummaryUI(
+        val indeterminates: Int,
         val critical: Int,
         val major: Int,
         val minor: Int,
