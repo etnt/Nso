@@ -1,7 +1,7 @@
 package se.kruskakli.nso.data.packages
 
 import kotlinx.coroutines.runBlocking
-import se.kruskakli.nso.data.packages.RetrofitInstance
+import se.kruskakli.nso.data.RetrofitInstance
 
 fun main() {
     runBlocking {

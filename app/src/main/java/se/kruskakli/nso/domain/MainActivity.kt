@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import se.kruskakli.nso.data.packages.RetrofitInstance
+import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.packages.toPackageUi
 
 class MainActivity : ComponentActivity() {
@@ -37,17 +37,13 @@ class MainActivity : ComponentActivity() {
 
             var nsoPackages by remember { mutableStateOf(listOf<PackageUi>()) }
             var getNsoPackages = fun() {
-                Log.d("MainActivity", "GETTING PACKAGES")
                 GlobalScope.launch(Dispatchers.IO) {
-                    Log.d("MainActivity", "Inside GlobalScope: ${ipAddress}:${port}")
                     val api = RetrofitInstance.getApi(
                         "http://${ipAddress}:${port}/restconf/data/",
                         "admin",
                         "admin"
                     )
-                    Log.d("MainActivity", "API: ${api}")
                     val response = api.getPackages()
-                    Log.d("MainActivity", "RESPONSE: ${response}")
                     if (response.tailfNcsPackages != null) {
 
                         withContext(Dispatchers.Main) {
@@ -61,7 +57,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-                //Log.d("MainActivity", "packages: ${nsopackages}")
             }
 
             NsoTheme {

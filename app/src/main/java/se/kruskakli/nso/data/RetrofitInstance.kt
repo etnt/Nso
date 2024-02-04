@@ -1,6 +1,5 @@
-package se.kruskakli.nso.data.packages
+package se.kruskakli.nso.data
 
-import android.util.Log
 import com.squareup.moshi.Moshi
 import retrofit2.Retrofit
 import okhttp3.Credentials
@@ -16,7 +15,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 // val packages = api.getPackages()
 //
 object RetrofitInstance {
-    private var api: PackagesApi? = null
+    private var api: NsoApi? = null
 
     private val interceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -30,8 +29,7 @@ object RetrofitInstance {
         .add(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory())
         .build()
 
-    fun getApi(baseUrl: String, user: String, password: String): PackagesApi {
-        //Log.d("MainActivity", "getApi: ${baseUrl} ${user} ${password}")
+    fun getApi(baseUrl: String, user: String, password: String): NsoApi {
         if (api == null) {
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor { chain ->
@@ -46,15 +44,13 @@ object RetrofitInstance {
                 }
                 .addInterceptor(interceptor)
                 .build()
-            //Log.d("MainActivity", "getApi: ${okHttpClient} ${api}")
             api = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .client(okHttpClient)
                 .build()
-                .create(PackagesApi::class.java)
+                .create(NsoApi::class.java)
         }
-        //Log.d("MainActivity", "getApi, returning: ${api}")
         // In Kotlin, !! is the non-null assertion operator. It converts any
         // value to a non-null type and throws an exception if the value is null.
         return api!!
