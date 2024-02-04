@@ -66,6 +66,7 @@ fun ipPortSettings(
     var newName by remember { mutableStateOf(name) }
     var newIp by remember { mutableStateOf(ip) }
     var newPort by remember { mutableStateOf(port) }
+    var saveColor by remember { mutableStateOf(Color.Black) }
 
     Card(
         modifier = Modifier
@@ -105,9 +106,12 @@ fun ipPortSettings(
                 }
                 ClickableText(
                     text = text,
-                    onClick = { onAction(newName, newIp, newPort) },
+                    onClick = {
+                        saveColor = Color.Black
+                        onAction(newName, newIp, newPort)
+                    },
                     style = TextStyle(
-                        color = Color.Blue
+                        color = saveColor
                     ),
                     modifier = Modifier.padding(end = 4.dp)
                 )
@@ -120,7 +124,10 @@ fun ipPortSettings(
                 TextField(
                     value = newIp,
                     label = { Text(text = "IP Address:") },
-                    onValueChange = { newIp = it },
+                    onValueChange = {
+                        saveColor = Color.Blue
+                        newIp = it
+                    },
                     // To remove the ugly underline
                     colors = TextFieldDefaults.textFieldColors(
                         disabledTextColor = Color.Transparent,
@@ -132,7 +139,10 @@ fun ipPortSettings(
                 TextField(
                     value = newPort,
                     label = { Text(text = "Port:") },
-                    onValueChange = { newPort = it },
+                    onValueChange = {
+                        saveColor = Color.Blue
+                        newPort = it
+                    },
                     //modifier = Modifier
                     //    .fillMaxWidth(),
                     // To remove the ugly underline

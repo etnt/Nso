@@ -75,7 +75,7 @@ fun HomeScreen(
                 }
                 TabPage.Packages -> {
                     Log.d("MainActivity", "HomeScreen, before PACKAGES: ${nsoPackages}")
-                    if (refresh or nsoPackages.isEmpty()) {
+                    if (refresh || nsoPackages.isEmpty()) {
                         getNsoPackages()
                         setRefresh(false)
                     }
@@ -83,7 +83,7 @@ fun HomeScreen(
                     PackagesScreen(nsoPackages)
                 }
                 TabPage.Devices -> {
-                    if (refresh or nsoDevices.isEmpty()) {
+                    if (refresh || nsoDevices.isEmpty()) {
                         getNsoDevices()
                         setRefresh(false)
                     }
