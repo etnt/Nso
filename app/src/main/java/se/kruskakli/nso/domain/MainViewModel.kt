@@ -12,8 +12,6 @@ import kotlinx.coroutines.withContext
 import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
-import se.kruskakli.nso.domain.DeviceUi
-import se.kruskakli.nso.domain.PackageUi
 
 /*
 In this ViewModel, I've replaced remember { mutableStateOf(...) } with
@@ -44,6 +42,12 @@ class MainViewModel : ViewModel() {
         _refresh.value = newRefresh
     }
 
+    private val _apiError = MutableStateFlow<String?>(null)
+    val apiError: StateFlow<String?> = _apiError.asStateFlow()
+    fun clearApiError() {
+        _apiError.value = null
+    }
+
     private val _nsoPackages = MutableStateFlow(listOf<PackageUi>())
     val nsoPackages: StateFlow<List<PackageUi>> = _nsoPackages.asStateFlow()
 
@@ -54,22 +58,28 @@ class MainViewModel : ViewModel() {
     fun getNsoPackages() {
         Log.d("MainActivity", "getNsoPackages: ${ipAddress.value}:${port.value}")
         viewModelScope.launch(Dispatchers.IO) {
-            val api = RetrofitInstance.getApi(
-                "http://${ipAddress.value}:${port.value}/restconf/data/",
-                "admin",
-                "admin"
-            )
-            val response = api.getPackages()
-            if (response.tailfNcsPackages != null) {
-                withContext(Dispatchers.Main) {
-                    val newPackages = mutableListOf<PackageUi>()
-                    response.tailfNcsPackages.nsoPackages.forEach() {
-                        Log.d("MainActivity", "BODY: ${it}")
-                        val p = it.toPackageUi()
-                        newPackages.add(p)
+            val api =
+                    RetrofitInstance.getApi(
+                            "http://${ipAddress.value}:${port.value}/restconf/data/",
+                            "admin",
+                            "admin"
+                    )
+            try {
+                val response = api.getPackages()
+                if (response.tailfNcsPackages != null) {
+                    withContext(Dispatchers.Main) {
+                        val newPackages = mutableListOf<PackageUi>()
+                        response.tailfNcsPackages.nsoPackages.forEach() {
+                            Log.d("MainActivity", "BODY: ${it}")
+                            val p = it.toPackageUi()
+                            newPackages.add(p)
+                        }
+                        _nsoPackages.value = newPackages
                     }
-                    _nsoPackages.value = newPackages
                 }
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error: ${e.message}")
+                _apiError.value = e.message
             }
         }
     }
@@ -83,22 +93,28 @@ class MainViewModel : ViewModel() {
 
     fun getNsoDevices() {
         viewModelScope.launch(Dispatchers.IO) {
-            val api = RetrofitInstance.getApi(
-                "http://${ipAddress.value}:${port.value}/restconf/data/",
-                "admin",
-                "admin"
-            )
-            val response = api.getNsoDevices()
-            if (response.nsoDevices != null) {
-                withContext(Dispatchers.Main) {
-                    val newDevices = mutableListOf<DeviceUi>()
-                    response.nsoDevices.devices.forEach() {
-                        Log.d("MainActivity", "BODY: ${it}")
-                        val p = it.toDeviceUi()
-                        newDevices.add(p)
+            val api =
+                    RetrofitInstance.getApi(
+                            "http://${ipAddress.value}:${port.value}/restconf/data/",
+                            "admin",
+                            "admin"
+                    )
+            try {
+                val response = api.getNsoDevices()
+                if (response.nsoDevices != null) {
+                    withContext(Dispatchers.Main) {
+                        val newDevices = mutableListOf<DeviceUi>()
+                        response.nsoDevices.devices.forEach() {
+                            Log.d("MainActivity", "BODY: ${it}")
+                            val p = it.toDeviceUi()
+                            newDevices.add(p)
+                        }
+                        _nsoDevices.value = newDevices
                     }
-                    _nsoDevices.value = newDevices
                 }
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error: ${e.message}")
+                _apiError.value = e.message
             }
         }
     }

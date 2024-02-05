@@ -2,6 +2,8 @@ package se.kruskakli.nso.presentation
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,7 +59,8 @@ This allows SettingsScreen to update the settings in the ViewModel.
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
     var page by remember { mutableStateOf(TabPage.Home) }
-    Log.d("MainActivity", "HomeScreen: ${page}")
+    val apiError by viewModel.apiError.collectAsState()
+
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
     ) { padding ->
@@ -70,6 +73,9 @@ fun HomeScreen(viewModel: MainViewModel) {
             )
         ) {
             Divider()
+            if (apiError != null) {
+                page = TabPage.Error
+            }
             when (page) {
                 TabPage.Settings -> {
                     // By enter the SettingsScreen, we want to refresh the data.
@@ -102,6 +108,37 @@ fun HomeScreen(viewModel: MainViewModel) {
                 TabPage.Home -> {
                     WelcomePage()
                 }
+                TabPage.Error -> {
+                    ErrorPage(apiError, viewModel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ErrorPage(apiError: String?, viewModel: MainViewModel) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (apiError != null) {
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .border(2.dp, Color.Red)
+                    .clickable {
+                        Log.d("MainActivity", "Error clicked (clearing apiError)")
+                        viewModel.clearApiError()
+                    }
+            ) {
+                Text(
+                    text = "Error (click to clear): $apiError",
+                    modifier = Modifier.padding(8.dp),
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
