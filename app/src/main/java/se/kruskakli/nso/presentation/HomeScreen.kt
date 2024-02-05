@@ -39,8 +39,9 @@ import androidx.compose.ui.unit.sp
 import se.kruskakli.nso.domain.PackageUi
 import se.kruskakli.nso.domain.DeviceUi
 import se.kruskakli.nso.domain.MainViewModel
-import se.kruskakli.topbarexample.ui.RememberDevices
-import se.kruskakli.topbarexample.ui.RememberPackages
+import se.kruskakli.presentation.RememberDevices
+import se.kruskakli.presentation.RememberPackages
+import se.kruskakli.presentation.RememberAlarms
 
 /*
 In this code, I've replaced the parameters of HomeScreen with a single
@@ -108,11 +109,33 @@ fun HomeScreen(viewModel: MainViewModel) {
                 TabPage.Home -> {
                     WelcomePage()
                 }
+                TabPage.Alarms -> {
+                    AlarmsPage()
+                }
                 TabPage.Error -> {
                     ErrorPage(apiError, viewModel)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun AlarmsPage() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Alarms",
+            modifier = Modifier.padding(bottom = 200.dp),
+            style = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+        )
     }
 }
 
@@ -202,6 +225,17 @@ fun myTopBar(setScreen: (TabPage) -> Unit) {
             Icon(
                 RememberDevices(),
                 contentDescription = "Devices",
+                modifier = Modifier.size(20.dp),
+                tint = Color.Black
+            )
+        }
+        IconButton(
+            modifier = Modifier.padding(bottom = 4.dp),
+            onClick = { setScreen(TabPage.Alarms) }
+        ) {
+            Icon(
+                RememberAlarms(),
+                contentDescription = "Alarms",
                 modifier = Modifier.size(20.dp),
                 tint = Color.Black
             )

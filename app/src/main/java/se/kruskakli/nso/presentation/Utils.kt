@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 
 
 enum class TabPage {
-    Home, Settings, Packages, Devices, Error
+    Home, Settings, Packages, Devices, Error, Alarms
 }
 
 @Composable
