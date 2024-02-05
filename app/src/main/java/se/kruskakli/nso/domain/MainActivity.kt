@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import se.kruskakli.nso.presentation.HomeScreen
 import se.kruskakli.nso.ui.theme.NsoTheme
 import kotlinx.coroutines.Dispatchers
@@ -27,69 +28,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Log.d("MainActivity", "HERE")
-            var name by remember { mutableStateOf("Blueberry") }
-            var ipAddress by remember { mutableStateOf("10.147.40.166") }
-            var port by remember { mutableStateOf("8080")}
-            var applySettings: (String,String,String) -> Unit = fun(newName, newIp, newPort) {
-                name = newName
-                ipAddress = newIp
-                port = newPort
-            }
-
-            // If true, fetch data from NSO!
-            var refresh by remember { mutableStateOf(true) }
-            var setRefresh: (Boolean) -> Unit = fun(newRefresh) {
-                refresh = newRefresh
-            }
-
-            var nsoPackages by remember { mutableStateOf(listOf<PackageUi>()) }
-            var getNsoPackages = fun() {
-                Log.d("MainActivity", "getNsoPackages: ${ipAddress}:${port}")
-                GlobalScope.launch(Dispatchers.IO) {
-                    val api = RetrofitInstance.getApi(
-                        "http://${ipAddress}:${port}/restconf/data/",
-                        "admin",
-                        "admin"
-                    )
-                    val response = api.getPackages()
-                    if (response.tailfNcsPackages != null) {
-
-                        withContext(Dispatchers.Main) {
-                            val newPackages = mutableListOf<PackageUi>()
-                            response.tailfNcsPackages.nsoPackages.forEach() {
-                                Log.d("MainActivity", "BODY: ${it}")
-                                val p = it.toPackageUi()
-                                newPackages.add(p)
-                            }
-                            nsoPackages = newPackages
-                        }
-                    }
-                }
-            }
-
-            var nsoDevices by remember { mutableStateOf(listOf<DeviceUi>()) }
-            var getNsoDevices = fun() {
-                GlobalScope.launch(Dispatchers.IO) {
-                    val api = RetrofitInstance.getApi(
-                        "http://${ipAddress}:${port}/restconf/data/",
-                        "admin",
-                        "admin"
-                    )
-                    val response = api.getNsoDevices()
-                    if (response.nsoDevices != null) {
-
-                        withContext(Dispatchers.Main) {
-                            val newDevices = mutableListOf<DeviceUi>()
-                            response.nsoDevices.devices.forEach() {
-                                Log.d("MainActivity", "BODY: ${it}")
-                                val p = it.toDeviceUi()
-                                newDevices.add(p)
-                            }
-                            nsoDevices = newDevices
-                        }
-                    }
-                }
-            }
 
             NsoTheme {
                 // A surface container using the 'background' color from the theme
@@ -99,48 +37,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     //Text("Hello, world!")
                     Log.d("MainActivity", "Before enter HomeScreen")
-                    HomeScreen(
-                        name, ipAddress, port,
-                        applySettings,
-                        refresh, setRefresh,
-                        nsoPackages, getNsoPackages,
-                        nsoDevices, getNsoDevices
-                    )
-
-
-                    /*
-                    MainScreen(
-                        ip = ipFieldState,
-                        port = portFieldState,
-                        packages = nsopackages,
-                        ipOnChange = { ipFieldState = it },
-                        portOnChange = { portFieldState = it },
-                        onAction = fun() {
-                            GlobalScope.launch(Dispatchers.IO) {
-                                val api = RetrofitInstance.getApi(
-                                    "http://${ipFieldState}:${portFieldState}/restconf/data/",
-                                    "admin",
-                                    "admin"
-                                )
-                                val response = api.getPackages()
-                                if (response.tailfNcsPackages != null) {
-
-                                    withContext(Dispatchers.Main) {
-                                        val newPackages = mutableListOf<PackageUi>()
-                                        response.tailfNcsPackages.nsoPackages.forEach() {
-                                            Log.d("MainActivity", "BODY: ${it}")
-                                            val p = it.toPackageUi()
-                                            newPackages.add(p)
-                                        }
-                                        nsopackages = newPackages
-                                    }
-                                }
-                            }
-                            //Log.d("MainActivity", "packages: ${nsopackages}")
-                        }
-                    )
-                    */
-
+                    val viewModel: MainViewModel = viewModel()
+                    HomeScreen(viewModel)
                 }
             }
         }

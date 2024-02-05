@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -35,29 +36,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import se.kruskakli.nso.domain.PackageUi
 import se.kruskakli.nso.domain.DeviceUi
+import se.kruskakli.nso.domain.MainViewModel
 import se.kruskakli.topbarexample.ui.RememberDevices
 import se.kruskakli.topbarexample.ui.RememberPackages
 
+/*
+In this code, I've replaced the parameters of HomeScreen with a single
+viewModel parameter. I've also replaced the calls to onSettingsChange,
+setRefresh, getNsoPackages, and getNsoDevices with calls to the
+corresponding methods on viewModel.
 
+I've used collectAsState() to observe the StateFlows in the ViewModel.
+This collects the latest value from the StateFlow and provides it as a
+State that can be used in your Composable.
+
+Finally, I've passed a lambda to SettingsScreen that calls viewModel.applySettings().
+This allows SettingsScreen to update the settings in the ViewModel.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    name: String,
-    ipAddress: String,
-    port: String,
-    onSettingsChange: (String, String, String) -> Unit,
-    refresh: Boolean,
-    setRefresh: (Boolean) -> Unit,
-    nsoPackages: List<PackageUi>,
-    getNsoPackages: () -> Unit,
-    nsoDevices: List<DeviceUi>,
-    getNsoDevices: () -> Unit
-) {
+fun HomeScreen(viewModel: MainViewModel) {
     var page by remember { mutableStateOf(TabPage.Home) }
     Log.d("MainActivity", "HomeScreen: ${page}")
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
-    ) {padding ->
+    ) { padding ->
         Log.d("MainActivity", "BODY: ${page}")
         Box(modifier = Modifier
             .padding(
@@ -70,22 +73,29 @@ fun HomeScreen(
             when (page) {
                 TabPage.Settings -> {
                     // By enter the SettingsScreen, we want to refresh the data.
-                    setRefresh(true)
-                    SettingsScreen(name, ipAddress, port, onSettingsChange)
+                    viewModel.setRefresh(true)
+                    val name by viewModel.name.collectAsState()
+                    val ipAddress by viewModel.ipAddress.collectAsState()
+                    val port by viewModel.port.collectAsState()
+                    SettingsScreen(viewModel)
                 }
                 TabPage.Packages -> {
+                    val nsoPackages by viewModel.nsoPackages.collectAsState()
+                    val refresh by viewModel.refresh.collectAsState()
                     Log.d("MainActivity", "HomeScreen, before PACKAGES: ${nsoPackages}")
                     if (refresh || nsoPackages.isEmpty()) {
-                        getNsoPackages()
-                        setRefresh(false)
+                        viewModel.getNsoPackages()
+                        viewModel.setRefresh(false)
                     }
                     Log.d("MainActivity", "HomeScreen, after PACKAGES: ${nsoPackages}")
                     PackagesScreen(nsoPackages)
                 }
                 TabPage.Devices -> {
+                    val nsoDevices by viewModel.nsoDevices.collectAsState()
+                    val refresh by viewModel.refresh.collectAsState()
                     if (refresh || nsoDevices.isEmpty()) {
-                        getNsoDevices()
-                        setRefresh(false)
+                        viewModel.getNsoDevices()
+                        viewModel.setRefresh(false)
                     }
                     DevicesScreen(nsoDevices)
                 }

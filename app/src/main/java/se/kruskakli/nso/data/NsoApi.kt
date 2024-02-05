@@ -8,6 +8,6 @@ interface NsoApi {
     @GET("tailf-ncs%3Apackages")
     suspend fun getPackages(): NsoPackages
 
-    @GET("tailf-ncs%3Adevices")
+    @GET("tailf-ncs%3Adevices?depth=4")
     suspend fun getNsoDevices(): TailfNcsDevices
 }
