@@ -1,6 +1,7 @@
 package se.kruskakli.nso.data
 
 import retrofit2.http.GET
+import se.kruskakli.nso.data.alarms.NsoAlarmList
 import se.kruskakli.nso.data.packages.NsoPackages
 import se.kruskakli.nsopackages.data.devices.TailfNcsDevices
 
@@ -10,4 +11,7 @@ interface NsoApi {
 
     @GET("tailf-ncs%3Adevices?depth=4")
     suspend fun getNsoDevices(): TailfNcsDevices
+
+    @GET("tailf-ncs-alarms%3Aalarms/alarm-list")
+    suspend fun getNsoAlarmList(): NsoAlarmList
 }
