@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import se.kruskakli.nso.data.NsoApi
 import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
@@ -55,35 +56,6 @@ class MainViewModel : ViewModel() {
         _nsoPackages.value = emptyList()
     }
 
-    fun getNsoPackages() {
-        Log.d("MainActivity", "getNsoPackages: ${ipAddress.value}:${port.value}")
-        viewModelScope.launch(Dispatchers.IO) {
-            val api =
-                    RetrofitInstance.getApi(
-                            "http://${ipAddress.value}:${port.value}/restconf/data/",
-                            "admin",
-                            "admin"
-                    )
-            try {
-                val response = api.getPackages()
-                if (response.tailfNcsPackages != null) {
-                    withContext(Dispatchers.Main) {
-                        val newPackages = mutableListOf<PackageUi>()
-                        response.tailfNcsPackages.nsoPackages.forEach() {
-                            Log.d("MainActivity", "BODY: ${it}")
-                            val p = it.toPackageUi()
-                            newPackages.add(p)
-                        }
-                        _nsoPackages.value = newPackages
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error: ${e.message}")
-                _apiError.value = e.message
-            }
-        }
-    }
-
     private val _nsoDevices = MutableStateFlow(listOf<DeviceUi>())
     val nsoDevices: StateFlow<List<DeviceUi>> = _nsoDevices.asStateFlow()
 
@@ -91,31 +63,69 @@ class MainViewModel : ViewModel() {
         _nsoDevices.value = emptyList()
     }
 
+    /*
+        In this code, performApiCall now creates the NsoApi instance and
+        passes it to apiCall. The apiCall function now takes an NsoApi
+        parameter, which it uses to make the API call. This way, the
+        creation of the NsoApi instance is shared between getNsoPackages
+        and getNsoDevices, reducing code duplication.
+     */
+    private suspend fun <T> performApiCall(
+        apiCall: suspend (api: NsoApi) -> T,
+        onSuccess: (T) -> Unit
+    ) {
+        try {
+            val api = RetrofitInstance.getApi(
+                "http://${ipAddress.value}:${port.value}/restconf/data/",
+                "admin",
+                "admin"
+            )
+            val response = apiCall(api)
+            withContext(Dispatchers.Main) {
+                onSuccess(response)
+            }
+        } catch (e: Exception) {
+            Log.e("MainViewModel", "Error: ${e.message}")
+            _apiError.value = e.message
+        }
+    }
+    
+    fun getNsoPackages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            performApiCall(
+                apiCall = { api -> api.getPackages() },
+                onSuccess = { response ->
+                    if (response.tailfNcsPackages != null) {
+                        val newPackages = mutableListOf<PackageUi>()
+                        response.tailfNcsPackages.nsoPackages.forEach() {
+                            Log.d("MainActivity", "getNsoPackages BODY: ${it}")
+                            val p = it.toPackageUi()
+                            newPackages.add(p)
+                        }
+                        _nsoPackages.value = newPackages
+                    }
+                }
+            )
+        }
+    }
+    
     fun getNsoDevices() {
         viewModelScope.launch(Dispatchers.IO) {
-            val api =
-                    RetrofitInstance.getApi(
-                            "http://${ipAddress.value}:${port.value}/restconf/data/",
-                            "admin",
-                            "admin"
-                    )
-            try {
-                val response = api.getNsoDevices()
-                if (response.nsoDevices != null) {
-                    withContext(Dispatchers.Main) {
+            performApiCall(
+                apiCall = { api -> api.getNsoDevices() },
+                onSuccess = { response ->
+                    if (response.nsoDevices != null) {
                         val newDevices = mutableListOf<DeviceUi>()
                         response.nsoDevices.devices.forEach() {
-                            Log.d("MainActivity", "BODY: ${it}")
+                            Log.d("MainActivity", "getNsoDevices BODY: ${it}")
                             val p = it.toDeviceUi()
                             newDevices.add(p)
                         }
                         _nsoDevices.value = newDevices
                     }
                 }
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error: ${e.message}")
-                _apiError.value = e.message
-            }
+            )
         }
     }
+
 }
