@@ -110,7 +110,13 @@ fun HomeScreen(viewModel: MainViewModel) {
                     WelcomePage()
                 }
                 TabPage.Alarms -> {
-                    AlarmsPage()
+                    val nsoAlarms by viewModel.nsoAlarms.collectAsState()
+                    val refresh by viewModel.refresh.collectAsState()
+                    if (refresh || nsoAlarms.isEmpty()) {
+                        viewModel.getNsoAlarms()
+                        viewModel.setRefresh(false)
+                    }
+                    AlarmsScreen(nsoAlarms)
                 }
                 TabPage.Error -> {
                     ErrorPage(apiError, viewModel)
@@ -120,36 +126,18 @@ fun HomeScreen(viewModel: MainViewModel) {
     }
 }
 
-@Composable
-fun AlarmsPage() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Alarms",
-            modifier = Modifier.padding(bottom = 200.dp),
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-        )
-    }
-}
 
 @Composable
 fun ErrorPage(apiError: String?, viewModel: MainViewModel) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (apiError != null) {
             Box(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(start = 8.dp, top = 20.dp, end = 8.dp)
                     .border(2.dp, Color.Red)
                     .clickable {
                         Log.d("MainActivity", "Error clicked (clearing apiError)")

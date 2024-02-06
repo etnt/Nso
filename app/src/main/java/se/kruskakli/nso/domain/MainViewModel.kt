@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.kruskakli.nso.data.NsoApi
 import se.kruskakli.nso.data.RetrofitInstance
+import se.kruskakli.nso.data.alarms.toAlarmUi
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
 
@@ -61,6 +62,13 @@ class MainViewModel : ViewModel() {
 
     fun resetNsoDevices() {
         _nsoDevices.value = emptyList()
+    }
+
+    private val _nsoAlarms = MutableStateFlow(listOf<AlarmUi>())
+    val nsoAlarms: StateFlow<List<AlarmUi>> = _nsoAlarms.asStateFlow()
+
+    fun resetNsoAlarms() {
+        _nsoAlarms.value = emptyList()
     }
 
     /*
@@ -122,6 +130,25 @@ class MainViewModel : ViewModel() {
                             newDevices.add(p)
                         }
                         _nsoDevices.value = newDevices
+                    }
+                }
+            )
+        }
+    }
+
+    fun getNsoAlarms() {
+        viewModelScope.launch(Dispatchers.IO) {
+            performApiCall(
+                apiCall = { api -> api.getNsoAlarmList() },
+                onSuccess = { response ->
+                    if (response.nsoAlarmList != null) {
+                        val newAlarms = mutableListOf<AlarmUi>()
+                        response.nsoAlarmList.alarm.forEach() {
+                            Log.d("MainActivity", "getNsoDevices BODY: ${it}")
+                            val p = it.toAlarmUi()
+                            newAlarms.add(p)
+                        }
+                        _nsoAlarms.value = newAlarms
                     }
                 }
             )
