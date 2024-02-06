@@ -98,7 +98,13 @@ fun ipPortSettings(
                 TextField(
                     modifier = Modifier.weight(1f),
                     value = newName,
-                    label = { Text(text = "Name:") },
+                    textStyle = MaterialTheme.typography.titleMedium,
+                    label = {
+                        Text(
+                            text = "Name:",
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    },
                     onValueChange = { newName = it },
                     // To remove the ugly underline
                     colors = TextFieldDefaults.textFieldColors(
@@ -121,11 +127,9 @@ fun ipPortSettings(
                             shouldRefresh = true
                             isModified = true
                         },
-                        style = TextStyle(
-                            color = Color.Red
-                        ),
+                        style = MaterialTheme.typography.titleMedium.copy(color = Color.Red),
                         modifier = Modifier
-                            .padding(end = 8.dp)
+                            .padding(end = 16.dp)
                     )
                 }
 
@@ -137,6 +141,7 @@ fun ipPortSettings(
                 if (isModified) {
                     ClickableText(
                         text = saveText,
+                        style = MaterialTheme.typography.titleMedium.copy(color = Color.Blue),
                         onClick = {
                             isModified = false
                             viewModel.applySettings(newName, newIp, newPort)
@@ -145,9 +150,6 @@ fun ipPortSettings(
                                 viewModel.resetNsoDevices()
                             }
                         },
-                        style = TextStyle(
-                            color = Color.Blue
-                        ),
                         modifier = Modifier
                             .padding(end = 8.dp)
                     )
@@ -155,12 +157,18 @@ fun ipPortSettings(
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                //horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxWidth()
             ) {
                 TextField(
                     value = newIp,
-                    label = { Text(text = "IP Address:") },
+                    modifier = Modifier.weight(1f),
+                    textStyle = MaterialTheme.typography.titleMedium,
+                    label = {
+                        Text(
+                            text = "IP Address:",
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    },
                     onValueChange = {
                         isModified = true
                         newIp = it
@@ -175,13 +183,18 @@ fun ipPortSettings(
                 )
                 TextField(
                     value = newPort,
-                    label = { Text(text = "Port:") },
+                    modifier = Modifier.weight(1f),
+                    textStyle = MaterialTheme.typography.titleMedium,
+                    label = {
+                        Text(
+                            text = "Port:",
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    },
                     onValueChange = {
                         isModified = true
                         newPort = it
                     },
-                    //modifier = Modifier
-                    //    .fillMaxWidth(),
                     // To remove the ugly underline
                     colors = TextFieldDefaults.textFieldColors(
                         disabledTextColor = Color.Transparent,

@@ -1,6 +1,11 @@
 package se.kruskakli.nso.presentation
 
 import android.util.Log
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,8 +19,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +40,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
@@ -121,11 +135,38 @@ fun HomeScreen(viewModel: MainViewModel) {
                 TabPage.Error -> {
                     ErrorPage(apiError, viewModel)
                 }
+                TabPage.About -> {
+                    AboutPage()
+                }
             }
         }
     }
 }
 
+@Composable
+fun AboutPage() {
+    Card(
+        modifier = Modifier
+            .padding(start = 8.dp, top = 15.dp, end = 8.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        val text = """
+            NSO Mobile is an experimental application that allows
+            you to view the alarms, devices, and packages in your
+            NSO system.
+             
+            It is built with Kotlin and Jetpack Compose.
+        """.trimIndent()
+        Text(
+            text = text,
+            modifier = Modifier.padding(8.dp),
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
 
 @Composable
 fun ErrorPage(apiError: String?, viewModel: MainViewModel) {
@@ -156,19 +197,23 @@ fun ErrorPage(apiError: String?, viewModel: MainViewModel) {
 }
 
 @Composable
-fun WelcomePage() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+fun WelcomePage()
+{
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Welcome to NSO Mobile!",
-            modifier = Modifier.padding(bottom = 200.dp),
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+            modifier = Modifier
+                .padding(top = 100.dp),
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleLarge.copy(
+                shadow = Shadow(
+                    color = Color.LightGray,
+                    offset = Offset(4f, 4f),
+                    blurRadius = 8f
+                )
             )
         )
     }
@@ -227,6 +272,25 @@ fun myTopBar(setScreen: (TabPage) -> Unit) {
                 modifier = Modifier.size(20.dp),
                 tint = Color.Black
             )
+        }
+        IconButton(
+            modifier = Modifier.padding(bottom = 4.dp),
+            onClick = { setScreen(TabPage.About) }
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(16.dp)
+                    .clip(CircleShape)
+                    .border(1.dp, Color.Black, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    RememberQuestionMark(),
+                    contentDescription = "About",
+                    modifier = Modifier.size(14.dp),
+                    tint = Color.Black
+                )
+            }
         }
     }
 }

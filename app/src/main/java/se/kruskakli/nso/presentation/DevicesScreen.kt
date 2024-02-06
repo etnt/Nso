@@ -3,6 +3,7 @@ package se.kruskakli.nso.presentation
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -80,37 +81,40 @@ fun Device(
     var show by remember { mutableStateOf(false) }
     val toggleShow = { show = !show }
 
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray
-        ),
-        shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+            shape = RoundedCornerShape(corner = CornerSize(15.dp)),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp
+            )
         ) {
-            DeviceHeadField(label = "Device", value = name, toggleShow)
-            if (show) {
-                DeviceField(label = "Last Connected", value = lastConnected)
-                DeviceField(label = "Address", value = address)
-                DeviceField(label = "Port", value = port)
-                DeviceField(label = "Authgroup", value = authgroup)
-                DeviceField(label = "Commit Queue Length", value = commitQueue.queueLength)
-                DeviceField(label = "Oper State", value = state.operState)
-                if (state.transactionMode != null)
-                    DeviceField(label = "Transaction Mode", value = state.transactionMode)
-                DeviceField(label = "Admin State", value = state.adminState)
-                Alarms(alarmSummary)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                DeviceHeadField(label = "Device", value = name, toggleShow)
+                if (show) {
+                    DeviceField(label = "Last Connected", value = lastConnected)
+                    DeviceField(label = "Address", value = address)
+                    DeviceField(label = "Port", value = port)
+                    DeviceField(label = "Authgroup", value = authgroup)
+                    DeviceField(label = "Commit Queue Length", value = commitQueue.queueLength)
+                    DeviceField(label = "Oper State", value = state.operState)
+                    if (state.transactionMode != null)
+                        DeviceField(label = "Transaction Mode", value = state.transactionMode)
+                    DeviceField(label = "Admin State", value = state.adminState)
+                    Alarms(alarmSummary)
+                }
             }
         }
     }
@@ -124,7 +128,7 @@ fun Alarms(
     OutlinedCard(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray
+            containerColor = MaterialTheme.colorScheme.background
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -137,7 +141,7 @@ fun Alarms(
         ) {
             Text(
                 text = "Alarms:",
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.titleSmall
             )
             DeviceField(label = "Indeterminates", value = alarmSummary.indeterminates)
             DeviceField(label = "Criticals", value = alarmSummary.critical)
@@ -171,15 +175,12 @@ fun DeviceHeadField(
     ) {
         Text(
             text = "${label}:",
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.titleSmall
         )
         ClickableText(
             text = text,
             onClick = { toggleShow() },
-            style = TextStyle(
-                color = Color.Blue
-                //fontSize = 14.sp
-            ),
+            style = MaterialTheme.typography.bodySmall.copy(color = Color.Blue),
             modifier = Modifier.padding(start = 8.dp)
         )
     }
@@ -199,7 +200,7 @@ fun DeviceField(
     ) {
         Text(
             text = "${label}:",
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.titleSmall
         )
         Text(
             modifier = Modifier

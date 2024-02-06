@@ -94,4 +94,7 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation(kotlin("test"))
+
+    // To produce the splash screen text effect
+    implementation("androidx.compose.ui:ui-graphics:1.1.0-alpha01")
 }

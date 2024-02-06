@@ -1,6 +1,8 @@
 package se.kruskakli.nso.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -77,36 +79,39 @@ fun Alarm(
     var show by remember { mutableStateOf(false) }
     val toggleShow = { show = !show }
 
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray
-        ),
-        shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+            shape = RoundedCornerShape(corner = CornerSize(15.dp)),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp
+            )
         ) {
-            DeviceHeadField(label = "Device", value = device, toggleShow)
-            if (show) {
-                DeviceField(label = "Last Alarm Text", value = lastAlarmText)
-                DeviceField(label = "Is Cleared", value = isCleared)
-                DeviceField(label = "Last Perceived Severity", value = lastPerceivedSeverity)
-                DeviceField(label = "Last Status Change", value = lastStatusChange)
-                DeviceField(label = "Managed Object", value = managedObject)
-                DeviceField(label = "Specific Problem", value = specificProblem)
-                DeviceField(label = "Type", value = type)
-                statusChange.forEach() {
-                    StatusChange(statusChange = it)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                DeviceHeadField(label = "Device", value = device, toggleShow)
+                if (show) {
+                    DeviceField(label = "Last Alarm Text", value = lastAlarmText)
+                    DeviceField(label = "Is Cleared", value = isCleared)
+                    DeviceField(label = "Last Perceived Severity", value = lastPerceivedSeverity)
+                    DeviceField(label = "Last Status Change", value = lastStatusChange)
+                    DeviceField(label = "Managed Object", value = managedObject)
+                    DeviceField(label = "Specific Problem", value = specificProblem)
+                    DeviceField(label = "Type", value = type)
+                    statusChange.forEach() {
+                        StatusChange(statusChange = it)
+                    }
                 }
             }
         }
@@ -120,9 +125,6 @@ fun StatusChange(
 ) {
     OutlinedCard(
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray
-        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 2.dp, bottom = 2.dp)
@@ -134,7 +136,7 @@ fun StatusChange(
         ) {
             Text(
                 text = "Status Change:",
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.titleSmall
             )
             DeviceField(label = "Alarm Text", value = statusChange.alarmText)
             DeviceField(label = "Event Time", value = statusChange.eventTime)

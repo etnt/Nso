@@ -1,7 +1,9 @@
 package se.kruskakli.nso.presentation
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +35,7 @@ import kotlinx.coroutines.withContext
 import se.kruskakli.nso.domain.PackageUi
 import se.kruskakli.nso.ui.theme.NsoTheme
 
+
 @Composable
 fun PackagesScreen(
     nsoPackages: List<PackageUi>,
@@ -57,23 +60,6 @@ fun Packages(
                 ncsMinVersion = it.ncsMinVersion
             )
         }
-        /*
-        Package(
-            name = "gned",
-            version = "1.0",
-            description = "Need state test",
-            directory = "./state/packages-in-use/1/gned",
-            ncsMinVersion = listOf("2.0")
-        )
-        Package(
-            name = "gserv",
-            version = "1.0",
-            description = "Skeleton for a template-based service",
-            directory = "./state/packages-in-use/1/gserv",
-            ncsMinVersion = listOf("3.0")
-        )
-        */
-
     }
 }
 
@@ -87,30 +73,33 @@ fun Package(
     ncsMinVersion: List<String>,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray
-        ),
-        shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+            shape = RoundedCornerShape(corner = CornerSize(15.dp)),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp
+            )
         ) {
-            PackageField(label = "Package", value = name)
-            PackageField(label = "Version", value = version)
-            PackageField(label = "Description", value = description)
-            PackageField(label = "Directory", value = directory)
-            PackageField(label = "NCS Min Version", value = ncsMinVersion.toString())
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                PackageField(label = "Package", value = name)
+                PackageField(label = "Version", value = version)
+                PackageField(label = "Description", value = description)
+                PackageField(label = "Directory", value = directory)
+                PackageField(label = "NCS Min Version", value = ncsMinVersion.toString())
+            }
         }
     }
 }
@@ -124,12 +113,12 @@ fun PackageField(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp),
+            .padding(1.dp),
         horizontalArrangement = Arrangement.Start
     ) {
         Text(
             text = "${label}:",
-            style = MaterialTheme.typography.labelMedium
+            style = MaterialTheme.typography.titleSmall
         )
         Text(
             modifier = Modifier
