@@ -80,7 +80,8 @@ class MainViewModel : ViewModel() {
      */
     private suspend fun <T> performApiCall(
         apiCall: suspend (api: NsoApi) -> T,
-        onSuccess: (T) -> Unit
+        onSuccess: (T) -> Unit,
+        onError: () -> Unit = {}
     ) {
         try {
             val api = RetrofitInstance.getApi(
@@ -94,12 +95,17 @@ class MainViewModel : ViewModel() {
             }
         } catch (e: Exception) {
             Log.e("MainViewModel", "Error: ${e.message}")
+            onError()
             _apiError.value = e.message
         }
     }
-    
+
+    val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading.asStateFlow()
+
     fun getNsoPackages() {
         viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
             performApiCall(
                 apiCall = { api -> api.getPackages() },
                 onSuccess = { response ->
@@ -112,13 +118,18 @@ class MainViewModel : ViewModel() {
                         }
                         _nsoPackages.value = newPackages
                     }
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
                 }
             )
         }
     }
-    
+
     fun getNsoDevices() {
         viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
             performApiCall(
                 apiCall = { api -> api.getNsoDevices() },
                 onSuccess = { response ->
@@ -131,6 +142,10 @@ class MainViewModel : ViewModel() {
                         }
                         _nsoDevices.value = newDevices
                     }
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
                 }
             )
         }
@@ -138,6 +153,7 @@ class MainViewModel : ViewModel() {
 
     fun getNsoAlarms() {
         viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
             performApiCall(
                 apiCall = { api -> api.getNsoAlarmList() },
                 onSuccess = { response ->
@@ -150,6 +166,10 @@ class MainViewModel : ViewModel() {
                         }
                         _nsoAlarms.value = newAlarms
                     }
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
                 }
             )
         }

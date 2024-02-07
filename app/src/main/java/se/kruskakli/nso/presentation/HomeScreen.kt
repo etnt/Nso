@@ -75,6 +75,7 @@ This allows SettingsScreen to update the settings in the ViewModel.
 fun HomeScreen(viewModel: MainViewModel) {
     var page by remember { mutableStateOf(TabPage.Home) }
     val apiError by viewModel.apiError.collectAsState()
+    val loading by viewModel.loading.collectAsState()
 
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
@@ -108,8 +109,11 @@ fun HomeScreen(viewModel: MainViewModel) {
                         viewModel.getNsoPackages()
                         viewModel.setRefresh(false)
                     }
-                    Log.d("MainActivity", "HomeScreen, after PACKAGES: ${nsoPackages}")
-                    PackagesScreen(nsoPackages)
+                    if (loading) {
+                        LoadingState() // Display this while data is loading
+                    } else {
+                        PackagesScreen(nsoPackages)
+                    }
                 }
                 TabPage.Devices -> {
                     val nsoDevices by viewModel.nsoDevices.collectAsState()
@@ -118,7 +122,11 @@ fun HomeScreen(viewModel: MainViewModel) {
                         viewModel.getNsoDevices()
                         viewModel.setRefresh(false)
                     }
-                    DevicesScreen(nsoDevices)
+                    if (loading) {
+                        LoadingState() // Display this while data is loading
+                    } else {
+                        DevicesScreen(nsoDevices)
+                    }
                 }
                 TabPage.Home -> {
                     WelcomePage()
@@ -130,7 +138,11 @@ fun HomeScreen(viewModel: MainViewModel) {
                         viewModel.getNsoAlarms()
                         viewModel.setRefresh(false)
                     }
-                    AlarmsScreen(nsoAlarms)
+                    if (loading) {
+                        LoadingState() // Display this while data is loading
+                    } else {
+                        AlarmsScreen(nsoAlarms)
+                    }
                 }
                 TabPage.Error -> {
                     ErrorPage(apiError, viewModel)
