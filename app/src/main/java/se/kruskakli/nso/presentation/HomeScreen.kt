@@ -76,6 +76,10 @@ fun HomeScreen(viewModel: MainViewModel) {
     var page by remember { mutableStateOf(TabPage.Home) }
     val apiError by viewModel.apiError.collectAsState()
     val loading by viewModel.loading.collectAsState()
+    val nsoPackages by viewModel.nsoPackages.collectAsState()
+    val nsoDevices by viewModel.nsoDevices.collectAsState()
+    val nsoAlarms by viewModel.nsoAlarms.collectAsState()
+    val refresh by viewModel.refresh.collectAsState()
 
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
@@ -94,18 +98,12 @@ fun HomeScreen(viewModel: MainViewModel) {
             }
             when (page) {
                 TabPage.Settings -> {
-                    // By enter the SettingsScreen, we want to refresh the data.
-                    viewModel.setRefresh(true)
-                    val name by viewModel.name.collectAsState()
-                    val ipAddress by viewModel.ipAddress.collectAsState()
-                    val port by viewModel.port.collectAsState()
                     SettingsScreen(viewModel)
                 }
                 TabPage.Packages -> {
-                    val nsoPackages by viewModel.nsoPackages.collectAsState()
-                    val refresh by viewModel.refresh.collectAsState()
                     Log.d("MainActivity", "HomeScreen, before PACKAGES: ${nsoPackages}")
                     if (refresh || nsoPackages.isEmpty()) {
+                        viewModel.resetNsoPackages()
                         viewModel.getNsoPackages()
                         viewModel.setRefresh(false)
                     }
@@ -116,9 +114,10 @@ fun HomeScreen(viewModel: MainViewModel) {
                     }
                 }
                 TabPage.Devices -> {
-                    val nsoDevices by viewModel.nsoDevices.collectAsState()
-                    val refresh by viewModel.refresh.collectAsState()
                     if (refresh || nsoDevices.isEmpty()) {
+                        Log.d("HomeScreen", "No.of.Devices: ${nsoDevices.size}")
+                        Log.d("HomeScreen", "Refresh: ${refresh}")
+                        viewModel.resetNsoDevices()
                         viewModel.getNsoDevices()
                         viewModel.setRefresh(false)
                     }
@@ -132,9 +131,8 @@ fun HomeScreen(viewModel: MainViewModel) {
                     WelcomePage()
                 }
                 TabPage.Alarms -> {
-                    val nsoAlarms by viewModel.nsoAlarms.collectAsState()
-                    val refresh by viewModel.refresh.collectAsState()
                     if (refresh || nsoAlarms.isEmpty()) {
+                        viewModel.resetNsoAlarms()
                         viewModel.getNsoAlarms()
                         viewModel.setRefresh(false)
                     }

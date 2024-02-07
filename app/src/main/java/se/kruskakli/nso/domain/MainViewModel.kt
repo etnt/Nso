@@ -31,10 +31,25 @@ class MainViewModel : ViewModel() {
     private val _port = MutableStateFlow("8080")
     val port: StateFlow<String> = _port.asStateFlow()
 
-    fun applySettings(newName: String, newIp: String, newPort: String) {
+    private val _user = MutableStateFlow("admin")
+    val user: StateFlow<String> = _user.asStateFlow()
+
+    private val _passwd = MutableStateFlow("admin")
+    val passwd: StateFlow<String> = _passwd.asStateFlow()
+
+    fun applySettings(
+        newName: String,
+        newIp: String,
+        newPort: String,
+        newUser: String,
+        newPasswd: String
+    ) {
+        Log.d("MainViewModel", "applySettings: $newName, $newIp, $newPort, $newUser, $newPasswd")
         _name.value = newName
         _ipAddress.value = newIp
         _port.value = newPort
+        _user.value = newUser
+        _passwd.value = newPasswd
     }
 
     private val _refresh = MutableStateFlow(true)
@@ -79,6 +94,8 @@ class MainViewModel : ViewModel() {
         and getNsoDevices, reducing code duplication.
      */
     private suspend fun <T> performApiCall(
+        user: String,
+        password: String,
         apiCall: suspend (api: NsoApi) -> T,
         onSuccess: (T) -> Unit,
         onError: () -> Unit = {}
@@ -86,8 +103,8 @@ class MainViewModel : ViewModel() {
         try {
             val api = RetrofitInstance.getApi(
                 "http://${ipAddress.value}:${port.value}/restconf/data/",
-                "admin",
-                "admin"
+                user,
+                password
             )
             val response = apiCall(api)
             withContext(Dispatchers.Main) {
@@ -107,12 +124,14 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
             performApiCall(
+                user = _user.value,
+                password = _passwd.value,
                 apiCall = { api -> api.getPackages() },
                 onSuccess = { response ->
                     if (response.tailfNcsPackages != null) {
                         val newPackages = mutableListOf<PackageUi>()
                         response.tailfNcsPackages.nsoPackages.forEach() {
-                            Log.d("MainActivity", "getNsoPackages BODY: ${it}")
+                            //Log.d("MainViewModel", "getNsoPackages BODY: ${it}")
                             val p = it.toPackageUi()
                             newPackages.add(p)
                         }
@@ -131,12 +150,14 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
             performApiCall(
+                user = _user.value,
+                password = _passwd.value,
                 apiCall = { api -> api.getNsoDevices() },
                 onSuccess = { response ->
                     if (response.nsoDevices != null) {
                         val newDevices = mutableListOf<DeviceUi>()
                         response.nsoDevices.devices.forEach() {
-                            Log.d("MainActivity", "getNsoDevices BODY: ${it}")
+                            //Log.d("MainViewModel", "getNsoDevices BODY: ${it}")
                             val p = it.toDeviceUi()
                             newDevices.add(p)
                         }
@@ -155,12 +176,14 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _loading.value = true
             performApiCall(
+                user = _user.value,
+                password = _passwd.value,
                 apiCall = { api -> api.getNsoAlarmList() },
                 onSuccess = { response ->
                     if (response.nsoAlarmList != null) {
                         val newAlarms = mutableListOf<AlarmUi>()
                         response.nsoAlarmList.alarm.forEach() {
-                            Log.d("MainActivity", "getNsoDevices BODY: ${it}")
+                            //Log.d("MainViewModel", "getNsoDevices BODY: ${it}")
                             val p = it.toAlarmUi()
                             newAlarms.add(p)
                         }

@@ -66,11 +66,14 @@ fun ipPortSettings(
     val name by viewModel.name.collectAsState()
     val ip by viewModel.ipAddress.collectAsState()
     val port by viewModel.port.collectAsState()
+    val user by viewModel.user.collectAsState()
+    val passwd by viewModel.passwd.collectAsState()
 
     var newName by remember { mutableStateOf(name) }
     var newIp by remember { mutableStateOf(ip) }
     var newPort by remember { mutableStateOf(port) }
-    var saveColor by remember { mutableStateOf(Color.Black) }
+    var newUser by remember { mutableStateOf(user) }
+    var newPasswd by remember { mutableStateOf(passwd) }
 
     Card(
         modifier = Modifier
@@ -144,10 +147,9 @@ fun ipPortSettings(
                         style = MaterialTheme.typography.titleMedium.copy(color = Color.Blue),
                         onClick = {
                             isModified = false
-                            viewModel.applySettings(newName, newIp, newPort)
+                            viewModel.applySettings(newName, newIp, newPort, newUser, newPasswd)
                             if (shouldRefresh) {
-                                viewModel.resetNsoPackages()
-                                viewModel.resetNsoDevices()
+                                viewModel.setRefresh(true)
                             }
                         },
                         modifier = Modifier
@@ -155,56 +157,88 @@ fun ipPortSettings(
                     )
                 }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                TextField(
-                    value = newIp,
-                    modifier = Modifier.weight(1f),
-                    textStyle = MaterialTheme.typography.titleMedium,
-                    label = {
-                        Text(
-                            text = "IP Address:",
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    },
-                    onValueChange = {
-                        isModified = true
-                        newIp = it
-                    },
-                    // To remove the ugly underline
-                    colors = TextFieldDefaults.textFieldColors(
-                        disabledTextColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    )
-                )
-                TextField(
-                    value = newPort,
-                    modifier = Modifier.weight(1f),
-                    textStyle = MaterialTheme.typography.titleMedium,
-                    label = {
-                        Text(
-                            text = "Port:",
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    },
-                    onValueChange = {
-                        isModified = true
-                        newPort = it
-                    },
-                    // To remove the ugly underline
-                    colors = TextFieldDefaults.textFieldColors(
-                        disabledTextColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    )
-                )
-            }
+            CustomRow(
+                value1 = newIp,
+                text1 = "IP Address:",
+                onValueChange1 = {
+                    isModified = true
+                    newIp = it
+                },
+                value2 = newPort,
+                text2 = "Port:",
+                onValueChange2 = {
+                    isModified = true
+                    newPort = it
+                }
+            )
+            CustomRow(
+                value1 = newUser,
+                text1 = "User:",
+                onValueChange1 = {
+                    isModified = true
+                    newUser = it
+                },
+                value2 = newPasswd,
+                text2 = "Password:",
+                onValueChange2 = {
+                    isModified = true
+                    newPasswd = it
+                }
+            )
         }
-
     }
+}
+
+@Composable
+fun CustomRow(
+    value1: String,
+    text1: String,
+    onValueChange1: (String) -> Unit,
+    value2: String,
+    text2: String,
+    onValueChange2: (String) -> Unit
+) {
+    Row(Modifier.fillMaxWidth()) {
+        CustomTextField(
+            value = value1,
+            text = text1,
+            onValueChange = onValueChange1,
+            modifier = Modifier.weight(1f)
+        )
+        CustomTextField(
+            value = value2,
+            text = text2,
+            onValueChange = onValueChange2,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomTextField(
+    value: String,
+    text: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        modifier = modifier,
+        textStyle = MaterialTheme.typography.titleMedium,
+        label = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall
+            )
+        },
+        onValueChange = onValueChange,
+        // To remove the ugly underline
+        colors = TextFieldDefaults.textFieldColors(
+            disabledTextColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
+    )
 }
