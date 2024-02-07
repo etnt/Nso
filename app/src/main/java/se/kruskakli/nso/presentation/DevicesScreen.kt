@@ -104,15 +104,15 @@ fun Device(
             ) {
                 DeviceHeadField(label = "Device", value = name, toggleShow)
                 if (show) {
-                    DeviceField(label = "Last Connected", value = lastConnected)
-                    DeviceField(label = "Address", value = address)
-                    DeviceField(label = "Port", value = port)
-                    DeviceField(label = "Authgroup", value = authgroup)
-                    DeviceField(label = "Commit Queue Length", value = commitQueue.queueLength)
-                    DeviceField(label = "Oper State", value = state.operState)
+                    FieldComponent(Field("Last Connected", lastConnected))
+                    FieldComponent(Field("Address", address))
+                    FieldComponent(Field("Port", port))
+                    FieldComponent(Field("Authgroup", authgroup))
+                    FieldComponent(Field("Commit Queue Length", commitQueue.queueLength))
+                    FieldComponent(Field("Oper State", state.operState))
                     if (state.transactionMode != null)
-                        DeviceField(label = "Transaction Mode", value = state.transactionMode)
-                    DeviceField(label = "Admin State", value = state.adminState)
+                        FieldComponent(Field("Transaction Mode", state.transactionMode))
+                    FieldComponent(Field("Admin State", state.adminState))
                     Alarms(alarmSummary)
                 }
             }
@@ -143,11 +143,11 @@ fun Alarms(
                 text = "Alarms:",
                 style = MaterialTheme.typography.titleSmall
             )
-            DeviceField(label = "Indeterminates", value = alarmSummary.indeterminates)
-            DeviceField(label = "Criticals", value = alarmSummary.critical)
-            DeviceField(label = "Majors", value = alarmSummary.major)
-            DeviceField(label = "Minors", value = alarmSummary.minor)
-            DeviceField(label = "Warnings", value = alarmSummary.warning)
+            FieldComponent(Field("Indeterminates", alarmSummary.indeterminates))
+            FieldComponent(Field("Criticals", alarmSummary.critical))
+            FieldComponent(Field("Majors", alarmSummary.major))
+            FieldComponent(Field("Minors", alarmSummary.minor))
+            FieldComponent(Field("Warnings", alarmSummary.warning))
         }
     }
 
@@ -186,28 +186,5 @@ fun DeviceHeadField(
     }
 }
 
-@Composable
-fun DeviceField(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 0.dp),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Text(
-            text = "${label}:",
-            style = MaterialTheme.typography.titleSmall
-        )
-        Text(
-            modifier = Modifier
-                .padding(start = 8.dp),
-            text = value,
-            style = MaterialTheme.typography.bodySmall
-        )
-    }
-}
+
 

@@ -102,13 +102,13 @@ fun Alarm(
             ) {
                 DeviceHeadField(label = "Device", value = device, toggleShow)
                 if (show) {
-                    DeviceField(label = "Last Alarm Text", value = lastAlarmText)
-                    DeviceField(label = "Is Cleared", value = isCleared)
-                    DeviceField(label = "Last Perceived Severity", value = lastPerceivedSeverity)
-                    DeviceField(label = "Last Status Change", value = lastStatusChange)
-                    DeviceField(label = "Managed Object", value = managedObject)
-                    DeviceField(label = "Specific Problem", value = specificProblem)
-                    DeviceField(label = "Type", value = type)
+                    FieldComponent(Field("Last Alarm Text", lastAlarmText))
+                    FieldComponent(Field("Is Cleared", isCleared))
+                    FieldComponent(Field("Last Perceived Severity", lastPerceivedSeverity))
+                    FieldComponent(Field("Last Status Change", lastStatusChange))
+                    FieldComponent(Field("Managed Object", managedObject))
+                    FieldComponent(Field("Specific Problem", specificProblem))
+                    FieldComponent(Field("Type", type))
                     statusChange.forEach() {
                         StatusChange(statusChange = it)
                     }
@@ -138,10 +138,10 @@ fun StatusChange(
                 text = "Status Change:",
                 style = MaterialTheme.typography.titleSmall
             )
-            DeviceField(label = "Alarm Text", value = statusChange.alarmText)
-            DeviceField(label = "Event Time", value = statusChange.eventTime)
-            DeviceField(label = "Perceived Severity", value = statusChange.perceivedSeverity)
-            DeviceField(label = "Received Time", value = statusChange.receivedTime)
+            FieldComponent(Field("Alarm Text", statusChange.alarmText))
+            FieldComponent(Field("Event Time", statusChange.eventTime))
+            FieldComponent(Field("Perceived Severity", statusChange.perceivedSeverity))
+            FieldComponent(Field("Received Time", statusChange.receivedTime))
         }
     }
 
