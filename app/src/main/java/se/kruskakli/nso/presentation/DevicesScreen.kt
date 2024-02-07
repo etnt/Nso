@@ -104,87 +104,36 @@ fun Device(
             ) {
                 DeviceHeadField(label = "Device", value = name, toggleShow)
                 if (show) {
-                    FieldComponent(Field("Last Connected", lastConnected))
-                    FieldComponent(Field("Address", address))
-                    FieldComponent(Field("Port", port))
-                    FieldComponent(Field("Authgroup", authgroup))
-                    FieldComponent(Field("Commit Queue Length", commitQueue.queueLength))
-                    FieldComponent(Field("Oper State", state.operState))
-                    if (state.transactionMode != null)
-                        FieldComponent(Field("Transaction Mode", state.transactionMode))
-                    FieldComponent(Field("Admin State", state.adminState))
-                    Alarms(alarmSummary)
+                    val fields = mutableListOf(
+                        Field("Last Connected", lastConnected),
+                        Field("Address", address),
+                        Field("Port", port),
+                        Field("Authgroup", authgroup),
+                        Field("Commit Queue Length", commitQueue.queueLength),
+                        Field("Oper State", state.operState),
+                        Field("Admin State", state.adminState)
+                    )
+                    state.transactionMode?.let {
+                        fields.add(Field("Transaction Mode", it))
+                    }
+                    fields.forEach { field ->
+                        FieldComponent(field)
+                    }
+                    val alarmFields = listOf(
+                        Field("Indeterminates", alarmSummary.indeterminates),
+                        Field("Criticals", alarmSummary.critical),
+                        Field("Majors", alarmSummary.major),
+                        Field("Minors", alarmSummary.minor),
+                        Field("Warnings", alarmSummary.warning)
+                    )
+                    InsideCard("Status Change:", alarmFields)
                 }
             }
         }
     }
 }
 
-@Composable
-fun Alarms(
-    alarmSummary: TailfNcsAlarmsAlarmSummaryUI,
-    modifier: Modifier = Modifier
-) {
-    OutlinedCard(
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 2.dp, bottom = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, top = 4.dp, bottom = 4.dp),
-        ) {
-            Text(
-                text = "Alarms:",
-                style = MaterialTheme.typography.titleSmall
-            )
-            FieldComponent(Field("Indeterminates", alarmSummary.indeterminates))
-            FieldComponent(Field("Criticals", alarmSummary.critical))
-            FieldComponent(Field("Majors", alarmSummary.major))
-            FieldComponent(Field("Minors", alarmSummary.minor))
-            FieldComponent(Field("Warnings", alarmSummary.warning))
-        }
-    }
 
-}
-
-@Composable
-fun DeviceHeadField(
-    label: String,
-    value: String,
-    toggleShow: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val text = buildAnnotatedString {
-        withStyle(style = SpanStyle(fontSize = 12.sp)) {
-            append(value)
-        }
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 0.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Text(
-            text = "${label}:",
-            style = MaterialTheme.typography.titleSmall
-        )
-        ClickableText(
-            text = text,
-            onClick = { toggleShow() },
-            style = MaterialTheme.typography.bodySmall.copy(color = Color.Blue),
-            modifier = Modifier.padding(start = 8.dp)
-        )
-    }
-}
 
 
 

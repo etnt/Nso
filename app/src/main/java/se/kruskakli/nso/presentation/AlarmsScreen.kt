@@ -102,15 +102,26 @@ fun Alarm(
             ) {
                 DeviceHeadField(label = "Device", value = device, toggleShow)
                 if (show) {
-                    FieldComponent(Field("Last Alarm Text", lastAlarmText))
-                    FieldComponent(Field("Is Cleared", isCleared))
-                    FieldComponent(Field("Last Perceived Severity", lastPerceivedSeverity))
-                    FieldComponent(Field("Last Status Change", lastStatusChange))
-                    FieldComponent(Field("Managed Object", managedObject))
-                    FieldComponent(Field("Specific Problem", specificProblem))
-                    FieldComponent(Field("Type", type))
+                    val fields = listOf(
+                        Field("Last Alarm Text", lastAlarmText),
+                        Field("Is Cleared", isCleared),
+                        Field("Last Perceived Severity", lastPerceivedSeverity),
+                        Field("Last Status Change", lastStatusChange),
+                        Field("Managed Object", managedObject),
+                        Field("Specific Problem", specificProblem),
+                        Field("Type", type)
+                    )
+                    fields.forEach { field ->
+                        FieldComponent(field)
+                    }
                     statusChange.forEach() {
-                        StatusChange(statusChange = it)
+                        val statusChangeFields = listOf(
+                            Field("Alarm Text", it.alarmText),
+                            Field("Event Time", it.eventTime),
+                            Field("Perceived Severity", it.perceivedSeverity),
+                            Field("Received Time", it.receivedTime)
+                        )
+                        InsideCard("Status Change:", statusChangeFields)
                     }
                 }
             }
@@ -118,31 +129,4 @@ fun Alarm(
     }
 }
 
-@Composable
-fun StatusChange(
-    statusChange: AlarmUi.StatusChange,
-    modifier: Modifier = Modifier
-) {
-    OutlinedCard(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 2.dp, bottom = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, top = 4.dp, bottom = 4.dp),
-        ) {
-            Text(
-                text = "Status Change:",
-                style = MaterialTheme.typography.titleSmall
-            )
-            FieldComponent(Field("Alarm Text", statusChange.alarmText))
-            FieldComponent(Field("Event Time", statusChange.eventTime))
-            FieldComponent(Field("Perceived Severity", statusChange.perceivedSeverity))
-            FieldComponent(Field("Received Time", statusChange.receivedTime))
-        }
-    }
 
-}
