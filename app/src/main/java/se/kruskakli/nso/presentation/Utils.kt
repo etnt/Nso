@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
@@ -42,7 +44,8 @@ fun FieldComponent(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 0.dp),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "${field.label}:",
@@ -55,4 +58,10 @@ fun FieldComponent(
             style = MaterialTheme.typography.bodySmall
         )
     }
+}
+
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Composable
+fun FieldComponentPreview() {
+    FieldComponent(Field("Label", "Value"))
 }
