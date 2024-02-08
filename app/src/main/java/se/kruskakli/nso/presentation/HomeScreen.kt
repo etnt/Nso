@@ -52,24 +52,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import se.kruskakli.nso.domain.PackageUi
 import se.kruskakli.nso.domain.DeviceUi
+import se.kruskakli.nso.domain.MainIntent
 import se.kruskakli.nso.domain.MainViewModel
 import se.kruskakli.presentation.RememberDevices
 import se.kruskakli.presentation.RememberPackages
 import se.kruskakli.presentation.RememberAlarms
 
 /*
-In this code, I've replaced the parameters of HomeScreen with a single
-viewModel parameter. I've also replaced the calls to onSettingsChange,
-setRefresh, getNsoPackages, and getNsoDevices with calls to the
-corresponding methods on viewModel.
-
-I've used collectAsState() to observe the StateFlows in the ViewModel.
-This collects the latest value from the StateFlow and provides it as a
-State that can be used in your Composable.
-
-Finally, I've passed a lambda to SettingsScreen that calls viewModel.applySettings().
-This allows SettingsScreen to update the settings in the ViewModel.
- */
+    * The HomeScreen is the main screen of the application. It is a composable function that
+    * takes a MainViewModel as a parameter. The content of the body is determined by the current
+    * tab, which is a state variable.
+    *
+    * The HomeScreen function defines several state variables that are collected from the ViewModel,
+    * including apiError, loading, nsoPackages, nsoDevices, nsoAlarms, and refresh.
+    * These state variables are observed and any changes to them will cause a recompose to occur
+    * of the appropriate parts of the UI.
+    *
+    * For the PackagesScreen, DevicesScreen, and AlarmsScreen, before they are displayed,
+    * an intent is sent to the ViewModel to show the packages, devices, or alarms, respectively.
+    * This will trigger the ViewModel to enable fetching data and/or update the state, changes
+    * which then is observed by the HomeScreen.
+*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
@@ -79,7 +82,6 @@ fun HomeScreen(viewModel: MainViewModel) {
     val nsoPackages by viewModel.nsoPackages.collectAsState()
     val nsoDevices by viewModel.nsoDevices.collectAsState()
     val nsoAlarms by viewModel.nsoAlarms.collectAsState()
-    val refresh by viewModel.refresh.collectAsState()
 
     Scaffold(
         topBar = { myTopBar() { newPage -> page = newPage } },
@@ -97,56 +99,41 @@ fun HomeScreen(viewModel: MainViewModel) {
                 page = TabPage.Error
             }
             when (page) {
+                TabPage.Home -> {
+                    WelcomePage()
+                }
                 TabPage.Settings -> {
                     SettingsScreen(viewModel)
                 }
                 TabPage.Packages -> {
-                    Log.d("MainActivity", "HomeScreen, before PACKAGES: ${nsoPackages}")
-                    if (refresh || nsoPackages.isEmpty()) {
-                        viewModel.resetNsoPackages()
-                        viewModel.getNsoPackages()
-                        viewModel.setRefresh(false)
-                    }
+                    viewModel.handleIntent(MainIntent.ShowPackages)
                     if (loading) {
-                        LoadingState() // Display this while data is loading
+                        LoadingState()
                     } else {
                         PackagesScreen(nsoPackages)
                     }
                 }
                 TabPage.Devices -> {
-                    if (refresh || nsoDevices.isEmpty()) {
-                        Log.d("HomeScreen", "No.of.Devices: ${nsoDevices.size}")
-                        Log.d("HomeScreen", "Refresh: ${refresh}")
-                        viewModel.resetNsoDevices()
-                        viewModel.getNsoDevices()
-                        viewModel.setRefresh(false)
-                    }
+                    viewModel.handleIntent(MainIntent.ShowDevices)
                     if (loading) {
-                        LoadingState() // Display this while data is loading
+                        LoadingState()
                     } else {
                         DevicesScreen(nsoDevices)
                     }
                 }
-                TabPage.Home -> {
-                    WelcomePage()
-                }
                 TabPage.Alarms -> {
-                    if (refresh || nsoAlarms.isEmpty()) {
-                        viewModel.resetNsoAlarms()
-                        viewModel.getNsoAlarms()
-                        viewModel.setRefresh(false)
-                    }
+                    viewModel.handleIntent(MainIntent.ShowAlarms)
                     if (loading) {
-                        LoadingState() // Display this while data is loading
+                        LoadingState()
                     } else {
                         AlarmsScreen(nsoAlarms)
                     }
                 }
-                TabPage.Error -> {
-                    ErrorPage(apiError, viewModel)
-                }
                 TabPage.About -> {
                     AboutPage()
+                }
+                TabPage.Error -> {
+                    ErrorPage(apiError, viewModel)
                 }
             }
         }

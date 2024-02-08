@@ -1,23 +1,17 @@
 package se.kruskakli.nso.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -32,11 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
+import se.kruskakli.nso.domain.MainIntent
 import se.kruskakli.nso.domain.MainViewModel
+import se.kruskakli.nso.domain.SettingsData
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,12 +63,16 @@ fun ipPortSettings(
     val port by viewModel.port.collectAsState()
     val user by viewModel.user.collectAsState()
     val passwd by viewModel.passwd.collectAsState()
+    val refresh by viewModel.refresh.collectAsState()
 
     var newName by remember { mutableStateOf(name) }
     var newIp by remember { mutableStateOf(ip) }
     var newPort by remember { mutableStateOf(port) }
     var newUser by remember { mutableStateOf(user) }
     var newPasswd by remember { mutableStateOf(passwd) }
+    var shouldRefresh by remember { mutableStateOf(refresh) }
+
+    var isModified by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -83,10 +82,6 @@ fun ipPortSettings(
             defaultElevation = 4.dp
         )
     ) {
-        var isModified by remember { mutableStateOf(false) }
-        var shouldRefresh by remember { mutableStateOf(false) }
-
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -147,10 +142,8 @@ fun ipPortSettings(
                         style = MaterialTheme.typography.titleMedium.copy(color = Color.Blue),
                         onClick = {
                             isModified = false
-                            viewModel.applySettings(newName, newIp, newPort, newUser, newPasswd)
-                            if (shouldRefresh) {
-                                viewModel.setRefresh(true)
-                            }
+                            val settingsData = SettingsData(newName, newIp, newPort, newUser, newPasswd, shouldRefresh)
+                            viewModel.handleIntent(MainIntent.SaveSettings(settingsData))
                         },
                         modifier = Modifier
                             .padding(end = 8.dp)

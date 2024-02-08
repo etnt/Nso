@@ -37,19 +37,13 @@ class MainViewModel : ViewModel() {
     private val _passwd = MutableStateFlow("admin")
     val passwd: StateFlow<String> = _passwd.asStateFlow()
 
-    fun applySettings(
-        newName: String,
-        newIp: String,
-        newPort: String,
-        newUser: String,
-        newPasswd: String
-    ) {
-        Log.d("MainViewModel", "applySettings: $newName, $newIp, $newPort, $newUser, $newPasswd")
-        _name.value = newName
-        _ipAddress.value = newIp
-        _port.value = newPort
-        _user.value = newUser
-        _passwd.value = newPasswd
+    private fun applySettings(settingsData: SettingsData) {
+        _name.value = settingsData.name
+        _ipAddress.value = settingsData.ip
+        _port.value = settingsData.port
+        _user.value = settingsData.user
+        _passwd.value = settingsData.passwd
+        _refresh.value = settingsData.refresh
     }
 
     private val _refresh = MutableStateFlow(true)
@@ -198,4 +192,34 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun handleIntent(intent: MainIntent) {
+        when (intent) {
+            is MainIntent.ShowPackages -> {
+                if (_refresh.value || _nsoPackages.value.isEmpty()) {
+                    resetNsoPackages()
+                    getNsoPackages()
+                    setRefresh(false)
+                }
+            }
+            is MainIntent.ShowDevices -> {
+                if (_refresh.value || _nsoDevices.value.isEmpty()) {
+                    resetNsoDevices()
+                    getNsoDevices()
+                    setRefresh(false)
+                }
+            }
+            is MainIntent.ShowAlarms -> {
+                if (_refresh.value || _nsoAlarms.value.isEmpty()) {
+                    resetNsoAlarms()
+                    getNsoAlarms()
+                    setRefresh(false)
+                }
+            }
+            is MainIntent.SaveSettings -> {
+                applySettings(intent.settingsData)
+            }
+        }
+    }
+
 }
+
