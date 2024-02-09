@@ -33,7 +33,8 @@ import androidx.compose.ui.unit.sp
 
 
 enum class TabPage {
-    Home, Settings, Packages, Devices, Error, Alarms, About
+    Home, Settings, Packages, Devices, Error, Alarms, About,
+    Debug, Processes, Listeners, EtsTables
 }
 
 @Composable

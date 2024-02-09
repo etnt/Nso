@@ -16,10 +16,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -50,6 +56,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -102,6 +109,58 @@ fun HomeScreen(viewModel: MainViewModel) {
             ModalDrawerSheet{
                 Spacer(modifier = Modifier.height(16.dp))
                 menuItems.forEachIndexed { index, item ->
+                    if (item.hasSubItems) {
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .padding(start = 35.dp, bottom = 5.dp),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = item.selectedIcon,
+                                    contentDescription = item.title,
+                                    modifier = Modifier.size(15.dp),
+                                    tint = Color.Black
+                                )
+                                Text(
+                                    text = item.title,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    modifier = Modifier
+                                        .padding(start = 10.dp)
+                                )
+                            }
+                            item.subItems.forEach { subItem ->
+                                Row(
+                                    modifier = Modifier
+                                        .padding(start = 55.dp, bottom = 5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.PlayArrow,
+                                        contentDescription = "SubItem",
+                                        modifier = Modifier.size(10.dp),
+                                        tint = Color.Black
+                                    )
+                                    val text = AnnotatedString.Builder().apply {
+                                        append(subItem.title)
+                                    }.toAnnotatedString()
+                                    ClickableText(
+                                        text = text,
+                                        onClick = {
+                                            page = subItem.page
+                                            scope.launch{
+                                                drawerState.close()
+                                            }
+                                        },
+                                        style = MaterialTheme.typography.labelSmall,
+                                        modifier = Modifier
+                                            .padding(start = 10.dp)
+                                    )
+                                }
+                            }
+                        }
+                    } else {
                     NavigationDrawerItem(
                         label = {
                             Text(
@@ -117,15 +176,7 @@ fun HomeScreen(viewModel: MainViewModel) {
                         selected = index == selectedItemIndex,
                         onClick = {
                             selectedItemIndex = index
-                            page = when (index) {
-                                0 -> TabPage.Home
-                                1 -> TabPage.Settings
-                                2 -> TabPage.Packages
-                                3 -> TabPage.Devices
-                                4 -> TabPage.Alarms
-                                5 -> TabPage.About
-                                else -> TabPage.Home
-                            }
+                            page = item.page
                             scope.launch{
                                 drawerState.close()
                             }
@@ -144,6 +195,7 @@ fun HomeScreen(viewModel: MainViewModel) {
                         modifier = Modifier
                             .padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
+                    }
                 }
             }
         }
@@ -228,6 +280,19 @@ fun HomeScreen(viewModel: MainViewModel) {
                         AboutPage()
                     }
 
+                    TabPage.Debug -> {
+                        AboutPage()
+                    }
+                    TabPage.Processes -> {
+                        AboutPage()
+                    }
+                    TabPage.Listeners -> {
+                        AboutPage()
+                    }
+                    TabPage.EtsTables -> {
+                        AboutPage()
+                    }
+
                     TabPage.Error -> {
                         ErrorPage(apiError, viewModel)
                     }
@@ -240,42 +305,78 @@ fun HomeScreen(viewModel: MainViewModel) {
 
 data class NavigationItem(
     val title: String,
+    val page: TabPage = TabPage.Home,
     val selectedIcon: ImageVector,
-    val unSelectedIcon: ImageVector
-)
+    val unSelectedIcon: ImageVector,
+    val subItems: List<NavigationItem> = emptyList()
+) {
+    val hasSubItems: Boolean
+        get() = subItems.isNotEmpty()
+}
 
 @Composable
 private fun MenuItems(): List<NavigationItem> {
     return listOf(
         NavigationItem(
             title = "Home",
+            page = TabPage.Home,
             selectedIcon = Icons.Filled.Home,
-            unSelectedIcon = Icons.Filled.Home
+            unSelectedIcon = Icons.Outlined.Home
         ),
         NavigationItem(
             title = "Settings",
+            page = TabPage.Settings,
             selectedIcon = Icons.Filled.Settings,
-            unSelectedIcon = Icons.Filled.Settings
+            unSelectedIcon = Icons.Outlined.Settings
         ),
         NavigationItem(
             title = "Packages",
+            page = TabPage.Packages,
             selectedIcon = RememberPackages(),
             unSelectedIcon = RememberPackages()
         ),
         NavigationItem(
             title = "Devices",
+            page = TabPage.Devices,
             selectedIcon = RememberDevices(),
             unSelectedIcon = RememberDevices()
         ),
         NavigationItem(
             title = "Alarms",
+            page = TabPage.Alarms,
             selectedIcon = RememberAlarms(),
             unSelectedIcon = RememberAlarms()
         ),
         NavigationItem(
             title = "About",
+            page = TabPage.About,
             selectedIcon = RememberQuestionMark(),
             unSelectedIcon = RememberQuestionMark()
+        ),
+        NavigationItem(
+            title = "Debug",
+            selectedIcon = Icons.Filled.Build,
+            unSelectedIcon = Icons.Outlined.Build,
+            subItems = listOf(
+                NavigationItem(
+                    title = "Processes",
+                    page = TabPage.Processes,
+                    selectedIcon = RememberQuestionMark(),
+                    unSelectedIcon = RememberQuestionMark()
+                ),
+                NavigationItem(
+                    title = "Network Listeners",
+                    page = TabPage.Listeners,
+                    selectedIcon = RememberQuestionMark(),
+                    unSelectedIcon = RememberQuestionMark()
+                ),
+                NavigationItem(
+                    title = "ETS tables",
+                    page = TabPage.EtsTables,
+                    selectedIcon = RememberQuestionMark(),
+                    unSelectedIcon = RememberQuestionMark()
+                )
+            )
         )
     )
 }
