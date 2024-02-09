@@ -86,7 +86,7 @@ fun DeviceHeadFieldPreview() {
 
 data class Field(
     val label: String,
-    val value: String
+    val value: String?
 )
 
 @Composable
@@ -108,7 +108,7 @@ fun FieldComponent(
         Text(
             modifier = Modifier
                 .padding(start = 8.dp),
-            text = field.value,
+            text = field.value ?: "",
             style = MaterialTheme.typography.bodySmall
         )
     }

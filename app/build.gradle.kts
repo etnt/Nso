@@ -97,4 +97,10 @@ dependencies {
 
     // To produce the splash screen text effect
     implementation("androidx.compose.ui:ui-graphics:1.1.0-alpha01")
+
+    // Material3
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
+    implementation("androidx.compose.material3:material3-adaptive:1.0.0-alpha06")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha03")
 }

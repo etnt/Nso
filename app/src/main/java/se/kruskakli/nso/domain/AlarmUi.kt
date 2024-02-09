@@ -12,7 +12,7 @@ data class AlarmUi(
     val type: String
 ) {
     data class StatusChange(
-        val alarmText: String,
+        val alarmText: String?,
         val eventTime: String,
         val perceivedSeverity: String,
         val receivedTime: String
