@@ -10,6 +10,7 @@ sealed class MainIntent {
     object ShowPackages : MainIntent()
     object ShowDevices : MainIntent()
     object ShowAlarms : MainIntent()
+    object ShowInet : MainIntent()
     data class SaveSettings(val settingsData: SettingsData) : MainIntent()
 }
 

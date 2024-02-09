@@ -1,7 +1,7 @@
 package se.kruskakli.nso.data.devices
 
 import se.kruskakli.nso.domain.DeviceUi
-import se.kruskakli.nsopackages.data.devices.NcsDevice
+import se.kruskakli.nso.data.devices.NcsDevice
 
 fun NcsDevice.toDeviceUi(): DeviceUi {
     val nsoCommitQueue = DeviceUi.CommitQueueUI(

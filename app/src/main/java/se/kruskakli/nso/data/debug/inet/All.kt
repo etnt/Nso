@@ -11,5 +11,5 @@ data class All(
     @Json(name = "recv") val received: String,
     val sent: String,
     val state: String,
-    val type: String
+    val type: String?
 )

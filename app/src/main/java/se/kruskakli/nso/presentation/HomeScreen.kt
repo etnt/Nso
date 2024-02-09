@@ -97,6 +97,7 @@ fun HomeScreen(viewModel: MainViewModel) {
     val nsoPackages by viewModel.nsoPackages.collectAsState()
     val nsoDevices by viewModel.nsoDevices.collectAsState()
     val nsoAlarms by viewModel.nsoAlarms.collectAsState()
+    val nsoInet by viewModel.nsoInet.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -286,9 +287,16 @@ fun HomeScreen(viewModel: MainViewModel) {
                     TabPage.Processes -> {
                         AboutPage()
                     }
+
                     TabPage.Listeners -> {
-                        AboutPage()
+                        viewModel.handleIntent(MainIntent.ShowInet)
+                        if (loading) {
+                            LoadingState()
+                        } else {
+                            InetScreen(nsoInet)
+                        }
                     }
+
                     TabPage.EtsTables -> {
                         AboutPage()
                     }

@@ -1,4 +1,4 @@
-package se.kruskakli.nsopackages.data.devices
+package se.kruskakli.nso.data.devices
 
 data class TailfNcsAlarmsAlarmSummary(
     val indeterminates: Int,

@@ -1,4 +1,4 @@
-package se.kruskakli.nsopackages.data.devices
+package se.kruskakli.nso.data.devices
 
 import com.squareup.moshi.Json
 

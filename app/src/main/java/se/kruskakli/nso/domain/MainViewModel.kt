@@ -14,6 +14,7 @@ import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.alarms.toAlarmUi
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
+import se.kruskakli.nso.data.debug.inet.toInetUi
 
 /*
 In this ViewModel, I've replaced remember { mutableStateOf(...) } with
@@ -78,6 +79,13 @@ class MainViewModel : ViewModel() {
 
     fun resetNsoAlarms() {
         _nsoAlarms.value = emptyList()
+    }
+
+    private val _nsoInet = MutableStateFlow(listOf<InetUi>())
+    val nsoInet: StateFlow<List<InetUi>> = _nsoInet.asStateFlow()
+
+    fun resetNsoInet() {
+        _nsoInet.value = emptyList()
     }
 
     /*
@@ -192,6 +200,32 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun getNsoInet() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
+            performApiCall(
+                user = _user.value,
+                password = _passwd.value,
+                apiCall = { api -> api.getNsoInet() },
+                onSuccess = { response ->
+                    if (response.nsoInet != null) {
+                        val newInet = mutableListOf<InetUi>()
+                        response.nsoInet.all.forEach() {
+                            Log.d("MainViewModel", "getNsoInet BODY: ${it}")
+                            val p = it.toInetUi()
+                            newInet.add(p)
+                        }
+                        _nsoInet.value = newInet
+                    }
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
+                }
+            )
+        }
+    }
+
     fun handleIntent(intent: MainIntent) {
         when (intent) {
             is MainIntent.ShowPackages -> {
@@ -217,6 +251,13 @@ class MainViewModel : ViewModel() {
             }
             is MainIntent.SaveSettings -> {
                 applySettings(intent.settingsData)
+            }
+            is MainIntent.ShowInet -> {
+                if (_refresh.value || _nsoInet.value.isEmpty()) {
+                    resetNsoInet()
+                    getNsoInet()
+                    setRefresh(false)
+                }
             }
         }
     }
