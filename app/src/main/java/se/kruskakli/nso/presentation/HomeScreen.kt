@@ -1,7 +1,6 @@
 package se.kruskakli.nso.presentation
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,11 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
@@ -51,7 +48,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
@@ -61,11 +57,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import se.kruskakli.nso.R
 import se.kruskakli.nso.domain.MainIntent
 import se.kruskakli.nso.domain.MainViewModel
 import se.kruskakli.presentation.RememberDevices
 import se.kruskakli.presentation.RememberPackages
 import se.kruskakli.presentation.RememberAlarms
+import androidx.compose.ui.res.vectorResource
+
 
 @Composable
 fun ModalDrawer(drawerState: Any, drawerContent: () -> Unit, content: () -> Unit, function: () -> Unit, function1: (String?, MainViewModel) -> Unit, function2: () -> Unit, function3: ((TabPage) -> Unit) -> Unit) {
@@ -111,56 +110,15 @@ fun HomeScreen(viewModel: MainViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 menuItems.forEachIndexed { index, item ->
                     if (item.hasSubItems) {
-                        Column {
-                            Row(
-                                modifier = Modifier
-                                    .padding(start = 35.dp, bottom = 5.dp),
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = item.selectedIcon,
-                                    contentDescription = item.title,
-                                    modifier = Modifier.size(15.dp),
-                                    tint = Color.Black
-                                )
-                                Text(
-                                    text = item.title,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    modifier = Modifier
-                                        .padding(start = 10.dp)
-                                )
-                            }
-                            item.subItems.forEach { subItem ->
-                                Row(
-                                    modifier = Modifier
-                                        .padding(start = 55.dp, bottom = 5.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.PlayArrow,
-                                        contentDescription = "SubItem",
-                                        modifier = Modifier.size(10.dp),
-                                        tint = Color.Black
-                                    )
-                                    val text = AnnotatedString.Builder().apply {
-                                        append(subItem.title)
-                                    }.toAnnotatedString()
-                                    ClickableText(
-                                        text = text,
-                                        onClick = {
-                                            page = subItem.page
-                                            scope.launch{
-                                                drawerState.close()
-                                            }
-                                        },
-                                        style = MaterialTheme.typography.labelSmall,
-                                        modifier = Modifier
-                                            .padding(start = 10.dp)
-                                    )
+                        CustomNestedMenu(
+                            item,
+                            fun(newPage: TabPage) {
+                                page = newPage
+                                scope.launch {
+                                    drawerState.close()
                                 }
                             }
-                        }
+                        )
                     } else {
                     NavigationDrawerItem(
                         label = {
@@ -310,6 +268,57 @@ fun HomeScreen(viewModel: MainViewModel) {
     }
 }
 
+@Composable
+fun CustomNestedMenu(
+    item: NavigationItem,
+    onClick: (TabPage) -> Unit
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .padding(start = 30.dp, bottom = 5.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = item.selectedIcon,
+                contentDescription = item.title,
+                modifier = Modifier.size(20.dp),
+                tint = Color.Black
+            )
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .padding(start = 10.dp)
+            )
+        }
+        item.subItems.forEach { subItem ->
+            Row(
+                modifier = Modifier
+                    .padding(start = 55.dp, bottom = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    contentDescription = "SubItem",
+                    modifier = Modifier.size(10.dp),
+                    tint = Color.Black
+                )
+                val text = AnnotatedString.Builder().apply {
+                    append(subItem.title)
+                }.toAnnotatedString()
+                ClickableText(
+                    text = text,
+                    onClick = { onClick(subItem.page) },
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                )
+            }
+        }
+    }
+}
 
 data class NavigationItem(
     val title: String,
@@ -363,7 +372,7 @@ private fun MenuItems(): List<NavigationItem> {
         ),
         NavigationItem(
             title = "Debug",
-            selectedIcon = Icons.Filled.Build,
+            selectedIcon = ImageVector.vectorResource(id = R.drawable.ic_bug),
             unSelectedIcon = Icons.Outlined.Build,
             subItems = listOf(
                 NavigationItem(
