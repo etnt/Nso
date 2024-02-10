@@ -74,6 +74,10 @@ class MainViewModel : ViewModel() {
                 resetNsoInet()
                 getNsoInet()
             }
+            TabPage.EtsTables -> {
+                resetNsoEts()
+                getNsoEts()
+            }
             else -> {
                 // Do nothing
             }
