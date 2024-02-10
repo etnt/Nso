@@ -13,6 +13,7 @@ sealed class MainIntent {
     object ShowDevices : MainIntent()
     object ShowAlarms : MainIntent()
     object ShowInet : MainIntent()
+    object ShowEts : MainIntent()
     data class SaveSettings(val settingsData: SettingsData) : MainIntent()
     data class RefreshPage(val page: TabPage) : MainIntent()
 }

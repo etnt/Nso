@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import se.kruskakli.nso.data.NsoApi
 import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.alarms.toAlarmUi
+import se.kruskakli.nso.data.debug.ets.toEtsUi
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
 import se.kruskakli.nso.data.debug.inet.toInetUi
@@ -116,6 +117,13 @@ class MainViewModel : ViewModel() {
 
     fun resetNsoInet() {
         _nsoInet.value = emptyList()
+    }
+
+    private val _nsoEts = MutableStateFlow(listOf<EtsUi>())
+    val nsoEts: StateFlow<List<EtsUi>> = _nsoEts.asStateFlow()
+
+    fun resetNsoEts() {
+        _nsoEts.value = emptyList()
     }
 
     /*
@@ -247,11 +255,37 @@ class MainViewModel : ViewModel() {
                     if (response.nsoInet != null) {
                         val newInet = mutableListOf<InetUi>()
                         response.nsoInet.all.forEach() {
-                            Log.d("MainViewModel", "getNsoInet BODY: ${it}")
+                            //Log.d("MainViewModel", "getNsoInet BODY: ${it}")
                             val p = it.toInetUi()
                             newInet.add(p)
                         }
                         _nsoInet.value = newInet
+                    }
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
+                }
+            )
+        }
+    }
+
+    fun getNsoEts() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
+            performApiCall(
+                user = _user.value,
+                password = _passwd.value,
+                apiCall = { api -> api.getNsoEts() },
+                onSuccess = { response ->
+                    if (response.nsoEtsTables != null) {
+                        val newEts = mutableListOf<EtsUi>()
+                        response.nsoEtsTables.all.forEach() {
+                            Log.d("MainViewModel", "getNsoEts BODY: ${it}")
+                            val p = it.toEtsUi()
+                            newEts.add(p)
+                        }
+                        _nsoEts.value = newEts
                     }
                     _loading.value = false
                 },
@@ -295,6 +329,13 @@ class MainViewModel : ViewModel() {
                 if (_refresh.value || _nsoInet.value.isEmpty()) {
                     resetNsoInet()
                     getNsoInet()
+                    setRefresh(false)
+                }
+            }
+            is MainIntent.ShowEts -> {
+                if (_refresh.value || _nsoEts.value.isEmpty()) {
+                    resetNsoEts()
+                    getNsoEts()
                     setRefresh(false)
                 }
             }

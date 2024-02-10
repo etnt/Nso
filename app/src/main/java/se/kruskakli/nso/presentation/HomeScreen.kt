@@ -97,6 +97,7 @@ fun HomeScreen(viewModel: MainViewModel) {
     val nsoDevices by viewModel.nsoDevices.collectAsState()
     val nsoAlarms by viewModel.nsoAlarms.collectAsState()
     val nsoInet by viewModel.nsoInet.collectAsState()
+    val nsoEts by viewModel.nsoEts.collectAsState()
     val nsoDbgEnabled by viewModel.nsoDbgEnabled.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -262,6 +263,15 @@ fun HomeScreen(viewModel: MainViewModel) {
                             LoadingState()
                         } else {
                             InetScreen(nsoInet)
+                        }
+                    }
+
+                    TabPage.EtsTables -> {
+                        viewModel.handleIntent(MainIntent.ShowEts)
+                        if (loading) {
+                            LoadingState()
+                        } else {
+                            EtsScreen(nsoEts)
                         }
                     }
 
