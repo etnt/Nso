@@ -89,13 +89,14 @@ fun Inet(
                     Field("Type", inet.type)
                 )
                 InsideCard(
-                    header = "Network Listeners:",
+                    header = "Network Listeners",
                     fields = fields,
                     color = Color.LightGray,
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp)
                 )
             }
+            Divider()
         }
     }
 }
