@@ -98,7 +98,7 @@ fun FieldComponent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 0.dp),
+            .padding(start = 8.dp, top = 4.dp, end = 4.dp, bottom = 0.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -125,18 +125,20 @@ fun FieldComponentPreview() {
 fun InsideCard(
     header: String,
     fields: List<Field>,
+    color: Color = MaterialTheme.colorScheme.background,
     modifier: Modifier = Modifier
 ) {
     OutlinedCard(
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 2.dp, bottom = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 8.dp, top = 4.dp, bottom = 4.dp),
+                .background(color)
+                .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
         ) {
             Text(
                 text = header,

@@ -166,9 +166,17 @@ fun HomeScreen(viewModel: MainViewModel) {
                         Row(modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 20.dp),
-                            horizontalArrangement = Arrangement.Start
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text("NSO Mobile")
+                            IconButton(onClick = {
+                                viewModel.handleIntent(MainIntent.RefreshPage(page))
+                            }) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_flower),
+                                    contentDescription = "Refresh")
+                            }
                         }
                     },
                     navigationIcon = {
@@ -186,7 +194,6 @@ fun HomeScreen(viewModel: MainViewModel) {
                 )
             }
         ) { padding ->
-            Log.d("MainActivity", "BODY: ${page}")
             Box(
                 modifier = Modifier
                     .padding(
@@ -268,6 +275,10 @@ fun HomeScreen(viewModel: MainViewModel) {
     }
 }
 
+/*
+ * Since the ModalDrawerSheet composable didn't support nested menus,
+ * I had to create a custom composable for the nested menu items.
+ */
 @Composable
 fun CustomNestedMenu(
     item: NavigationItem,

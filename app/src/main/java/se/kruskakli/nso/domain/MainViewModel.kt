@@ -15,6 +15,7 @@ import se.kruskakli.nso.data.alarms.toAlarmUi
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
 import se.kruskakli.nso.data.debug.inet.toInetUi
+import se.kruskakli.nso.presentation.TabPage
 
 /*
 In this ViewModel, I've replaced remember { mutableStateOf(...) } with
@@ -26,10 +27,10 @@ class MainViewModel : ViewModel() {
     private val _name = MutableStateFlow("Blueberry")
     val name: StateFlow<String> = _name.asStateFlow()
 
-    private val _ipAddress = MutableStateFlow("10.147.40.166")
+    private val _ipAddress = MutableStateFlow("192.168.1.231")
     val ipAddress: StateFlow<String> = _ipAddress.asStateFlow()
 
-    private val _port = MutableStateFlow("8080")
+    private val _port = MutableStateFlow("9080")
     val port: StateFlow<String> = _port.asStateFlow()
 
     private val _user = MutableStateFlow("admin")
@@ -52,6 +53,30 @@ class MainViewModel : ViewModel() {
 
     fun setRefresh(newRefresh: Boolean) {
         _refresh.value = newRefresh
+    }
+
+    private fun refreshPage(page: TabPage) {
+        when (page) {
+            TabPage.Packages -> {
+                resetNsoPackages()
+                getNsoPackages()
+            }
+            TabPage.Devices -> {
+                resetNsoDevices()
+                getNsoDevices()
+            }
+            TabPage.Alarms -> {
+                resetNsoAlarms()
+                getNsoAlarms()
+            }
+            TabPage.Listeners -> {
+                resetNsoInet()
+                getNsoInet()
+            }
+            else -> {
+                // Do nothing
+            }
+        }
     }
 
     private val _apiError = MutableStateFlow<String?>(null)
@@ -251,6 +276,9 @@ class MainViewModel : ViewModel() {
             }
             is MainIntent.SaveSettings -> {
                 applySettings(intent.settingsData)
+            }
+            is MainIntent.RefreshPage -> {
+                refreshPage(intent.page)
             }
             is MainIntent.ShowInet -> {
                 if (_refresh.value || _nsoInet.value.isEmpty()) {
