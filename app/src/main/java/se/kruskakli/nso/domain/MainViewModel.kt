@@ -339,6 +339,26 @@ class MainViewModel : ViewModel() {
                     setRefresh(false)
                 }
             }
+            is MainIntent.SortData -> {
+                when (intent.source) {
+                    TabPage.EtsTables -> {
+                        Log.d("MainViewModel", "SortData: field=${intent.field} ${intent.type}")
+                        val sortedEts = when (intent.field) {
+                            "name" -> _nsoEts.value.sortedBy { it.name }
+                            "mem" -> _nsoEts.value.sortedBy { it.mem.toIntOrNull() ?: 0 }
+                            else -> _nsoEts.value
+                        }
+                        if (intent.type == SortType.Descending) {
+                            _nsoEts.value = sortedEts.reversed()
+                        } else {
+                            _nsoEts.value = sortedEts
+                        }
+                    }
+                    else -> {
+                        // Do nothing
+                    }
+                }
+            }
         }
     }
 

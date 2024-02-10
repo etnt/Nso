@@ -271,7 +271,7 @@ fun HomeScreen(viewModel: MainViewModel) {
                         if (loading) {
                             LoadingState()
                         } else {
-                            EtsScreen(nsoEts)
+                            EtsScreen(nsoEts, viewModel)
                         }
                     }
 

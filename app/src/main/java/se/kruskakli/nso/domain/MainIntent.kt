@@ -16,6 +16,12 @@ sealed class MainIntent {
     object ShowEts : MainIntent()
     data class SaveSettings(val settingsData: SettingsData) : MainIntent()
     data class RefreshPage(val page: TabPage) : MainIntent()
+    data class SortData(val source: TabPage, val field: String, val type: SortType) : MainIntent()
+}
+
+enum class SortType {
+    Ascending,
+    Descending
 }
 
 data class SettingsData(
