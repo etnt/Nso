@@ -97,6 +97,7 @@ fun HomeScreen(viewModel: MainViewModel) {
     val nsoDevices by viewModel.nsoDevices.collectAsState()
     val nsoAlarms by viewModel.nsoAlarms.collectAsState()
     val nsoInet by viewModel.nsoInet.collectAsState()
+    val nsoDbgEnabled by viewModel.nsoDbgEnabled.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -110,37 +111,39 @@ fun HomeScreen(viewModel: MainViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 menuItems.forEachIndexed { index, item ->
                     if (item.hasSubItems) {
-                        CustomNestedMenu(
-                            item,
-                            fun(newPage: TabPage) {
-                                page = newPage
-                                scope.launch {
-                                    drawerState.close()
-                                }
-                            }
-                        )
-                    } else {
-                    NavigationDrawerItem(
-                        label = {
-                            Text(
-                                text = item.title,
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = if (index == selectedItemIndex) {
-                                    FontWeight.Bold
-                                } else {
-                                    FontWeight.Normal
+                        if (nsoDbgEnabled) {
+                            CustomNestedMenu(
+                                item,
+                                fun(newPage: TabPage) {
+                                    page = newPage
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
                                 }
                             )
-                        },
-                        selected = index == selectedItemIndex,
-                        onClick = {
-                            selectedItemIndex = index
-                            page = item.page
-                            scope.launch{
-                                drawerState.close()
-                            }
-                        },
-                        icon = {
+                        }
+                    } else {
+                        NavigationDrawerItem(
+                            label = {
+                                Text(
+                                    text = item.title,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = if (index == selectedItemIndex) {
+                                        FontWeight.Bold
+                                    } else {
+                                        FontWeight.Normal
+                                    }
+                                )
+                            },
+                            selected = index == selectedItemIndex,
+                            onClick = {
+                                selectedItemIndex = index
+                                page = item.page
+                                scope.launch{
+                                    drawerState.close()
+                                }
+                            },
+                            icon = {
                                 Icon(
                                     modifier = Modifier.size(20.dp),
                                     imageVector = if (index == selectedItemIndex) {
@@ -150,10 +153,10 @@ fun HomeScreen(viewModel: MainViewModel) {
                                     },
                                     contentDescription = item.title
                                 )
-                        },
-                        modifier = Modifier
-                            .padding(NavigationDrawerItemDefaults.ItemPadding)
-                    )
+                            },
+                            modifier = Modifier
+                                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                        )
                     }
                 }
             }

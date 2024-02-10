@@ -88,8 +88,13 @@ class MainViewModel : ViewModel() {
     private val _nsoPackages = MutableStateFlow(listOf<PackageUi>())
     val nsoPackages: StateFlow<List<PackageUi>> = _nsoPackages.asStateFlow()
 
+    // To make it possible to enable/disable the debug menus
+    private val _nsoDbgEnabled = MutableStateFlow(false)
+    val nsoDbgEnabled: StateFlow<Boolean> = _nsoDbgEnabled.asStateFlow()
+
     fun resetNsoPackages() {
         _nsoPackages.value = emptyList()
+        _nsoDbgEnabled.value = false
     }
 
     private val _nsoDevices = MutableStateFlow(listOf<DeviceUi>())
@@ -155,16 +160,22 @@ class MainViewModel : ViewModel() {
                 password = _passwd.value,
                 apiCall = { api -> api.getPackages() },
                 onSuccess = { response ->
-                    if (response.tailfNcsPackages != null) {
-                        val newPackages = mutableListOf<PackageUi>()
-                        response.tailfNcsPackages.nsoPackages.forEach() {
-                            //Log.d("MainViewModel", "getNsoPackages BODY: ${it}")
-                            val p = it.toPackageUi()
-                            newPackages.add(p)
-                        }
-                        _nsoPackages.value = newPackages
+                    val newPackages = mutableListOf<PackageUi>()
+                    response.tailfNcsPackages.nsoPackages.forEach() {
+                        //Log.d("MainViewModel", "getNsoPackages BODY: ${it}")
+                        val p = it.toPackageUi()
+                        newPackages.add(p)
                     }
+                    _nsoPackages.value = newPackages
                     _loading.value = false
+
+                    // Check if the nso_dbg package is installed
+                    newPackages.forEach { packageUi ->
+                        if (packageUi.name == "nso_dbg") {
+                            _nsoDbgEnabled.value = true
+                            return@forEach
+                        }
+                    }
                 },
                 onError = {
                     _loading.value = false
