@@ -99,6 +99,11 @@ fun SortingBar(
                 tint = Color.Black
             )
         }
+        Text(
+            text = "ETS Tables",
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(0.dp)
+        )
         IconButton(
             modifier = Modifier
                 .padding(0.dp),
