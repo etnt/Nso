@@ -120,7 +120,7 @@ fun Device(
                         )
                     },
                     textColor = MaterialTheme.colorScheme.onSurface,
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.surface
                 )
             }
             Divider()

@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,12 +46,52 @@ fun InetScreen(
     Box(modifier = Modifier
         .fillMaxSize()
     ) {
-        Divider()
-        LazyColumn {
-            items(items = nsoInet) {
-                Inet(it)
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(0.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Divider()
+            InetHeader()
+            LazyColumn {
+                items(items = nsoInet) {
+                    Inet(it)
+                }
             }
         }
+    }
+}
+
+@Composable
+fun InetHeader(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Local Address",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(start = 8.dp)
+        )
+        Text(
+            text = "Foreign Address",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodySmall,
+        )
+        Text(
+            text = "State",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(end = 32.dp)
+        )
     }
 }
 
