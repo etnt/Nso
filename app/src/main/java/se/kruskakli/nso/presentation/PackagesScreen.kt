@@ -77,11 +77,11 @@ fun Package(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
@@ -97,7 +97,8 @@ fun Package(
                 InsideCard(
                     header = "NSO Package:",
                     fields = fields,
-                    color = Color.LightGray,
+                    textColor = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp)
                 )
@@ -123,14 +124,48 @@ fun PackagesHeadField(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val text = buildAnnotatedString {
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            withStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
                 append("Package: ")
+            }
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
                 append(p.name)
             }
-            append("  (")
-            append(p.packageVersion)
-            append(")  - ")
-            withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+            withStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
+                append("  (")
+            }
+            withStyle(
+                style = SpanStyle(
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
+                append(p.packageVersion)
+            }
+            withStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
+                append(")  - ")
+            }
+            withStyle(
+                style = SpanStyle(
+                    fontStyle = FontStyle.Italic
+                )
+            ) {
                 append(p.description)
             }
         }

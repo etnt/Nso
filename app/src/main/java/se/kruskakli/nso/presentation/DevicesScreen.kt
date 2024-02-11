@@ -1,19 +1,18 @@
 package se.kruskakli.nso.presentation
 
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,9 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import se.kruskakli.nso.domain.DeviceUi
-import se.kruskakli.nso.domain.DeviceUi.*
 
 
 @Composable
@@ -39,33 +42,30 @@ fun Devices(
     devices: List<DeviceUi>,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn {
-        items(items = devices) {
-            //Log.d("NsoDevicesScreen", "it: ${it}")
-            Device(
-                name = it.name,
-                lastConnected = it.lastConnected,
-                address = it.address,
-                port = it.port,
-                authgroup = it.authgroup,
-                commitQueue = it.commitQueue,
-                state = it.state,
-                alarmSummary = it.alarmSummary
-            )
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(0.dp)
+    ) {
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(0.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Divider()
+            LazyColumn {
+                items(items = devices) {
+                    Device(it)
+                }
+            }
         }
     }
 }
 
 @Composable
 fun Device(
-    name: String,
-    lastConnected: String,
-    address: String,
-    port: String,
-    authgroup: String,
-    commitQueue: CommitQueueUI,
-    state: StateUI,
-    alarmSummary: TailfNcsAlarmsAlarmSummaryUI,
+    device: DeviceUi,
     modifier: Modifier = Modifier
 ) {
     var show by remember { mutableStateOf(false) }
@@ -74,56 +74,117 @@ fun Device(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
     ) {
-        Card(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 10.dp
-            )
+                .padding(0.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                DeviceHeadField(label = "Device", value = name, toggleShow)
-                if (show) {
-                    val fields = mutableListOf(
-                        Field("Last Connected", lastConnected),
-                        Field("Address", address),
-                        Field("Port", port),
-                        Field("Authgroup", authgroup),
-                        Field("Commit Queue Length", commitQueue.queueLength),
-                        Field("Oper State", state.operState),
-                        Field("Admin State", state.adminState)
-                    )
-                    state.transactionMode?.let {
-                        fields.add(Field("Transaction Mode", it))
-                    }
-                    fields.forEach { field ->
-                        FieldComponent(field)
-                    }
-                    val alarmFields = listOf(
-                        Field("Indeterminates", alarmSummary.indeterminates),
-                        Field("Criticals", alarmSummary.critical),
-                        Field("Majors", alarmSummary.major),
-                        Field("Minors", alarmSummary.minor),
-                        Field("Warnings", alarmSummary.warning)
-                    )
-                    InsideCard("Status Change:", alarmFields)
+            DeviceHeadField(device, toggleShow)
+            if (show) {
+                val fields = mutableListOf(
+                    Field("Last Connected", device.lastConnected),
+                    Field("Address", device.address),
+                    Field("Port", device.port),
+                    Field("Authgroup", device.authgroup),
+                    Field("Commit Queue Length", device.commitQueue.queueLength),
+                    Field("Oper State", device.state.operState),
+                    Field("Admin State", device.state.adminState)
+                )
+                device.state.transactionMode?.let {
+                    fields.add(Field("Transaction Mode", it))
                 }
+
+                val alarmFields = listOf(
+                    Field("Indeterminates", device.alarmSummary.indeterminates),
+                    Field("Criticals", device.alarmSummary.critical),
+                    Field("Majors", device.alarmSummary.major),
+                    Field("Minors", device.alarmSummary.minor),
+                    Field("Warnings", device.alarmSummary.warning)
+                )
+                
+                OutlinedCards(
+                    header = "Header",
+                    fields = fields,
+                    cards = listOf(
+                        {
+                        InsideCard(
+                            header = "Alarm Summary:",
+                            fields = alarmFields,
+                            textColor = MaterialTheme.colorScheme.onSecondary,
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .padding(start = 8.dp, end = 8.dp)
+                        )
+                        }
+                    )
+                )
             }
+            Divider()
         }
     }
 }
 
-
+@Composable
+fun DeviceHeadField(
+    device: DeviceUi,
+    toggleShow: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { toggleShow() })
+            .padding(6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        val text = buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                )
+            ) {
+                append("Device: ")
+            }
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
+                append(device.name)
+            }
+            append("  OperState(")
+            withStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
+                append(device.state.operState)
+            }
+            append(")")
+            append("  Alarms(")
+            withStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {
+                append(device.alarmSummary.sum().toString())
+            }
+            append(")")
+        }
+        Text(
+            text = text,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+        )
+    }
+}
 
 
 

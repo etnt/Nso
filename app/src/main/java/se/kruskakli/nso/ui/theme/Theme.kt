@@ -84,7 +84,6 @@ fun NsoTheme(
     }
 
     MaterialTheme(
-        typography = Typography,
         colorScheme = colors,
         content = content
     )

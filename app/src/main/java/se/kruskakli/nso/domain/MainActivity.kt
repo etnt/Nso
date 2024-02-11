@@ -36,8 +36,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //Text("Hello, world!")
-                    Log.d("MainActivity", "Before enter HomeScreen")
                     val viewModel: MainViewModel = viewModel()
                     HomeScreen(viewModel)
                 }

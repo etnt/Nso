@@ -12,24 +12,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 
 enum class TabPage {
@@ -46,44 +38,6 @@ fun Divider() {
     )
 }
 
-@Composable
-fun DeviceHeadField(
-    label: String,
-    value: String,
-    toggleShow: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val text = buildAnnotatedString {
-        withStyle(style = SpanStyle(fontSize = 12.sp)) {
-            append(value)
-        }
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 0.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Text(
-            text = "${label}:",
-            style = MaterialTheme.typography.titleSmall
-        )
-        ClickableText(
-            text = text,
-            onClick = { toggleShow() },
-            style = MaterialTheme.typography.bodySmall.copy(color = Color.Blue),
-            modifier = Modifier.padding(start = 8.dp)
-        )
-    }
-}
-
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
-@Composable
-fun DeviceHeadFieldPreview() {
-    DeviceHeadField("Label", "Value", {})
-}
-
 
 data class Field(
     val label: String,
@@ -93,6 +47,7 @@ data class Field(
 @Composable
 fun FieldComponent(
     field: Field,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -104,12 +59,14 @@ fun FieldComponent(
     ) {
         Text(
             text = "${field.label}:",
+            color = textColor,
             style = MaterialTheme.typography.titleSmall
         )
         Text(
             modifier = Modifier
                 .padding(start = 8.dp),
             text = field.value ?: "",
+            color = textColor,
             style = MaterialTheme.typography.bodySmall
         )
     }
@@ -125,7 +82,8 @@ fun FieldComponentPreview() {
 fun InsideCard(
     header: String,
     fields: List<Field>,
-    color: Color = MaterialTheme.colorScheme.background,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary,
+    color: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
     OutlinedCard(
@@ -142,10 +100,56 @@ fun InsideCard(
         ) {
             Text(
                 text = header,
+                color = textColor,
+                style = MaterialTheme.typography.titleSmall
+            )
+            fields.forEach { field ->
+                FieldComponent(
+                    field = field,
+                    textColor = textColor
+                )
+            }
+        }
+    }
+}
+
+/*
+   Prompt:
+   The selected code consists of a Composable that will create an OutlinedCard.
+   Create a function that can create a similar composable: OutlinedCards ,which
+   takes a list of fields but also a list of OutlinedCard that should be nested
+   within.
+*/
+@Composable
+fun OutlinedCards(
+    header: String,
+    fields: List<Field>,
+    cards: List<@Composable () -> Unit>,
+    color: Color = MaterialTheme.colorScheme.primary,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, top = 2.dp, bottom = 4.dp, end = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color)
+                .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
+        ) {
+            Text(
+                text = header,
+                color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.titleSmall
             )
             fields.forEach { field ->
                 FieldComponent(field)
+            }
+            cards.forEach { card ->
+                card()
             }
         }
     }

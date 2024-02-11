@@ -26,5 +26,9 @@ data class DeviceUi(
         val major: String,
         val minor: String,
         val warning: String
-    )
+    ) {
+        fun sum(): Int {
+            return indeterminates.toInt() + critical.toInt() + major.toInt() + minor.toInt() + warning.toInt()
+        }
+    }
 }
