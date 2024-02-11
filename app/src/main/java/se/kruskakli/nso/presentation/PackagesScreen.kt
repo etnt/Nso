@@ -97,8 +97,8 @@ fun Package(
                 InsideCard(
                     header = "NSO Package:",
                     fields = fields,
-                    textColor = MaterialTheme.colorScheme.onPrimary,
-                    color = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.surface,
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp)
                 )
@@ -134,7 +134,7 @@ fun PackagesHeadField(
             withStyle(
                 style = SpanStyle(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.primary
                 )
             ) {
                 append(p.name)

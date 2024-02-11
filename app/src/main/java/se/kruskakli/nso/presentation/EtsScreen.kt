@@ -156,7 +156,6 @@ fun Ets(
                 InsideCard(
                     header = "ETS tables:",
                     fields = fields,
-                    color = Color.LightGray,
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp)
                 )

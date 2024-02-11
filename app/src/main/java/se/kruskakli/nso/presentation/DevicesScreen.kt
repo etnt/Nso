@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -106,20 +107,20 @@ fun Device(
                 )
                 
                 OutlinedCards(
-                    header = "Header",
+                    header = "Device Info:",
                     fields = fields,
-                    cards = listOf(
-                        {
+                    cards = listOf {
                         InsideCard(
                             header = "Alarm Summary:",
                             fields = alarmFields,
-                            textColor = MaterialTheme.colorScheme.onSecondary,
-                            color = MaterialTheme.colorScheme.secondary,
+                            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             modifier = Modifier
                                 .padding(start = 8.dp, end = 8.dp)
                         )
-                        }
-                    )
+                    },
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.surface,
                 )
             }
             Divider()
@@ -152,7 +153,7 @@ fun DeviceHeadField(
             withStyle(
                 style = SpanStyle(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.primary
                 )
             ) {
                 append(device.name)
@@ -160,7 +161,8 @@ fun DeviceHeadField(
             append("  OperState(")
             withStyle(
                 style = SpanStyle(
-                    color = MaterialTheme.colorScheme.onBackground
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.primary
                 )
             ) {
                 append(device.state.operState)
@@ -169,7 +171,8 @@ fun DeviceHeadField(
             append("  Alarms(")
             withStyle(
                 style = SpanStyle(
-                    color = MaterialTheme.colorScheme.onBackground
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.primary
                 )
             ) {
                 append(device.alarmSummary.sum().toString())

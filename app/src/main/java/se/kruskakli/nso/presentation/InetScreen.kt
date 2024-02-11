@@ -91,7 +91,6 @@ fun Inet(
                 InsideCard(
                     header = "Network Listeners",
                     fields = fields,
-                    color = Color.LightGray,
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp)
                 )

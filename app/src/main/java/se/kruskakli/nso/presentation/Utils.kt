@@ -47,7 +47,7 @@ data class Field(
 @Composable
 fun FieldComponent(
     field: Field,
-    textColor: Color = MaterialTheme.colorScheme.onPrimary,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -82,8 +82,8 @@ fun FieldComponentPreview() {
 fun InsideCard(
     header: String,
     fields: List<Field>,
-    textColor: Color = MaterialTheme.colorScheme.onPrimary,
-    color: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = MaterialTheme.colorScheme.surface,
     modifier: Modifier = Modifier
 ) {
     OutlinedCard(
@@ -125,7 +125,8 @@ fun OutlinedCards(
     header: String,
     fields: List<Field>,
     cards: List<@Composable () -> Unit>,
-    color: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = MaterialTheme.colorScheme.surface,
     modifier: Modifier = Modifier
 ) {
     OutlinedCard(
@@ -142,11 +143,11 @@ fun OutlinedCards(
         ) {
             Text(
                 text = header,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textColor,
                 style = MaterialTheme.typography.titleSmall
             )
             fields.forEach { field ->
-                FieldComponent(field)
+                FieldComponent(field, textColor)
             }
             cards.forEach { card ->
                 card()
