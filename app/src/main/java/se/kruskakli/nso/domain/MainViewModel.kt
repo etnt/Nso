@@ -79,6 +79,10 @@ class MainViewModel : ViewModel() {
                 resetNsoEts()
                 getNsoEts()
             }
+            TabPage.Allocators -> {
+                resetNsoAllocators()
+                getNsoAllocators()
+            }
             else -> {
                 // Do nothing
             }

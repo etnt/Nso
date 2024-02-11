@@ -426,6 +426,12 @@ private fun MenuItems(): List<NavigationItem> {
                     page = TabPage.EtsTables,
                     selectedIcon = RememberQuestionMark(),
                     unSelectedIcon = RememberQuestionMark()
+                ),
+                NavigationItem(
+                    title = "ERTS Allocators",
+                    page = TabPage.Allocators,
+                    selectedIcon = RememberQuestionMark(),
+                    unSelectedIcon = RememberQuestionMark()
                 )
             )
         )

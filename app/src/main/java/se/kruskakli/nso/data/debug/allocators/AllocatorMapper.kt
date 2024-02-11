@@ -4,7 +4,7 @@ import se.kruskakli.nso.domain.AllocatorUi
 
 fun NsoAllocators.toAllocatorUi(): AllocatorUi {
     return AllocatorUi(
-        allocators = allocators.map { it.toNsoAllocator() },
+        allocators = allocator.map { it.toNsoAllocator() },
         blocksSize = blocksSize,
         carriersSize = carriersSize,
         utilization = utilization,
@@ -16,7 +16,7 @@ fun NsoAllocators.toAllocatorUi(): AllocatorUi {
 fun Allocator.toNsoAllocator(): AllocatorUi.NsoAllocator {
     return AllocatorUi.NsoAllocator(
         name = name,
-        instance = instance,
+        instance = instance.toString(),
         blocksSize = blocksSize,
         carriersSize = carriersSize,
         utilization = utilization,

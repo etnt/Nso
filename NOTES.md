@@ -54,6 +54,8 @@ See [also](https://developer.android.com/studio/write/vector-asset-studio#svg)
 * Add an intent in MainIntent.kt
 * Add the handling of that intent in MainViewModel.kt
 * Add corresponding TabPage handling in HomeScreen.kt
+* Add refresh handling in MainViewModel.kt
+* Add a new menu item in HomeScreen.kt
 * Add the new screen composable to view the data (e.g see AlarmsScreen.kt)
 
 
