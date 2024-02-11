@@ -440,26 +440,33 @@ private fun MenuItems(): List<NavigationItem> {
 
 @Composable
 fun AboutPage() {
-    Card(
+    Row(
         modifier = Modifier
-            .padding(start = 8.dp, top = 15.dp, end = 8.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
+            .fillMaxWidth()
+            .padding(top = 30.dp),
+        horizontalArrangement = Arrangement.Center
     ) {
-        val text = """
+        Card(
+            shape = RoundedCornerShape(8.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp
+            )
+        ) {
+            val text = """
             NSO Mobile is an experimental application that allows
-            you to view the alarms, devices, and packages in your
-            NSO system.
+            you to view the alarms, devices, packages and debug
+            info from your NSO system.
              
-            It is built with Kotlin and Jetpack Compose.
+            It is built with Kotlin and Jetpack Compose, mainly
+            as an exercise in learning these technologies.
         """.trimIndent()
-        Text(
-            text = text,
-            modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
     }
 }
 

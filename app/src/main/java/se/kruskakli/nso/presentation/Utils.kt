@@ -29,7 +29,7 @@ fun Divider() {
     Spacer(modifier = Modifier
         .height(1.dp)
         .fillMaxWidth()
-        .background(Color.LightGray)
+        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     )
 }
 
