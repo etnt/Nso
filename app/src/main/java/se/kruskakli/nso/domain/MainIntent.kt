@@ -14,6 +14,7 @@ sealed class MainIntent {
     object ShowAlarms : MainIntent()
     object ShowInet : MainIntent()
     object ShowEts : MainIntent()
+    object ShowAllocators : MainIntent()
     data class SaveSettings(val settingsData: SettingsData) : MainIntent()
     data class RefreshPage(val page: TabPage) : MainIntent()
     data class SortData(val source: TabPage, val field: String, val type: SortType) : MainIntent()

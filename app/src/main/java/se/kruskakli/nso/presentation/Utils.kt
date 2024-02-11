@@ -24,11 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
-enum class TabPage {
-    Home, Settings, Packages, Devices, Error, Alarms, About,
-    Debug, Processes, Listeners, EtsTables
-}
-
 @Composable
 fun Divider() {
     Spacer(modifier = Modifier

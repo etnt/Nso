@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import se.kruskakli.nso.data.NsoApi
 import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.alarms.toAlarmUi
+import se.kruskakli.nso.data.debug.allocators.toAllocatorUi
 import se.kruskakli.nso.data.debug.ets.toEtsUi
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
@@ -128,6 +129,13 @@ class MainViewModel : ViewModel() {
 
     fun resetNsoEts() {
         _nsoEts.value = emptyList()
+    }
+
+    private val _nsoAllocators = MutableStateFlow<AllocatorUi?>(null)
+    val nsoAllocators: StateFlow<AllocatorUi?> = _nsoAllocators.asStateFlow()
+
+    fun resetNsoAllocators() {
+        _nsoAllocators.value = null
     }
 
     /*
@@ -300,6 +308,26 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun getNsoAllocators() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
+            performApiCall(
+                user = _user.value,
+                password = _passwd.value,
+                apiCall = { api -> api.getNsoAllocators() },
+                onSuccess = { response ->
+                    if (response.nsoAllocators != null) {
+                        _nsoAllocators.value = response.nsoAllocators.toAllocatorUi()
+                    }
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
+                }
+            )
+        }
+    }
+
     fun handleIntent(intent: MainIntent) {
         when (intent) {
             is MainIntent.ShowPackages -> {
@@ -340,6 +368,13 @@ class MainViewModel : ViewModel() {
                 if (_refresh.value || _nsoEts.value.isEmpty()) {
                     resetNsoEts()
                     getNsoEts()
+                    setRefresh(false)
+                }
+            }
+            is MainIntent.ShowAllocators -> {
+                if (_refresh.value || _nsoAllocators.value == null) {
+                    resetNsoAllocators()
+                    getNsoAllocators()
                     setRefresh(false)
                 }
             }

@@ -2,6 +2,7 @@ package se.kruskakli.nso.data
 
 import retrofit2.http.GET
 import se.kruskakli.nso.data.alarms.NsoAlarmList
+import se.kruskakli.nso.data.debug.allocators.Allocators
 import se.kruskakli.nso.data.debug.ets.Ets
 import se.kruskakli.nso.data.debug.inet.Inet
 import se.kruskakli.nso.data.packages.NsoPackages
@@ -22,4 +23,7 @@ interface NsoApi {
 
     @GET("nso-dbg%3Anso-dbg/beam-state/ets-tables")
     suspend fun getNsoEts(): Ets
+
+    @GET("nso-dbg%3Anso-dbg/beam-state/memory/stats/live/allocators")
+    suspend fun getNsoAllocators(): Allocators
 }
