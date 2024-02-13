@@ -1,5 +1,6 @@
 package se.kruskakli.nso.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,11 @@ import se.kruskakli.nso.domain.ProcessUi
 import se.kruskakli.nso.domain.SortType
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import se.kruskakli.nso.R
 
 
 @Composable
@@ -63,6 +68,44 @@ fun ProcessScreen(
 fun Process(
     process: ProcessUi
 ) {
+    var show by remember { mutableStateOf(false) }
+    val toggleShow = { show = !show }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { toggleShow() })
+            .padding(4.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        ProcHeader(process)
+        if (show) {
+            val fields = listOf(
+                Field("Pid", process.pid),
+                Field("Name", process.name),
+                Field("Reductions", process.reds),
+                Field("Memory", process.memory),
+                Field("Initial Call", process.icall),
+                Field("Current Function", process.ccall),
+                Field("Message Queue Len", process.msgs),
+                Field("Shared Binaries", process.sharedBinaries ?: "-")
+            )
+            InsideCard(
+                header = "Process Info:",
+                fields = fields,
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp)
+            )
+        }
+        Divider()
+    }
+}
+
+@Composable
+private fun ProcHeader(
+    process: ProcessUi
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,14 +115,16 @@ fun Process(
     ) {
         Text(
             text = if (process.name == "") process.pid else process.name,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodySmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .padding(0.dp)
                 .weight(2f)
         )
         Text(
             text = process.reds,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(0.dp)
                 .weight(1f),
@@ -87,7 +132,7 @@ fun Process(
         )
         Text(
             text = process.memory,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(0.dp)
                 .weight(1f),
@@ -105,120 +150,117 @@ fun ProcSortingBar(
     var memSortType by remember { mutableStateOf(SortType.Ascending) }
     var redsSortType by remember { mutableStateOf(SortType.Ascending) }
 
-    Column(
+    val arrowUpIcon = ImageVector.vectorResource(id = R.drawable.ic_arrow_drop_up)
+    val arrowDownIcon = ImageVector.vectorResource(id = R.drawable.ic_arrow_drop_down)
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(start = 8.dp, end = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
+
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                modifier = Modifier
-                    .padding(0.dp),
-                onClick = {
+                .clickable {
                     nameSortType =
                         if (nameSortType == SortType.Ascending) SortType.Descending else SortType.Ascending
                     viewModel.handleIntent(
                         MainIntent.SortData(
-                            TabPage.EtsTables,
+                            TabPage.Processes,
                             "name",
                             nameSortType
                         )
                     )
                 }
-            ) {
-                Icon(
-                    imageVector = if (nameSortType == SortType.Ascending) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = "Sort Ascending",
-                    modifier = Modifier
-                        .padding(0.dp),
-                    tint = Color.Black
-                )
-            }
-            IconButton(
+                .weight(2f),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = if (nameSortType == SortType.Ascending) arrowUpIcon else arrowDownIcon,
+                contentDescription = "Sort",
                 modifier = Modifier
                     .padding(0.dp),
-                onClick = {
+                tint = Color.Black
+            )
+            Text(
+                text = "Name",
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                        .padding(0.dp),
+                //.weight(1f),
+                //textAlign = TextAlign.Start
+            )
+        }
+        Row(
+            modifier = Modifier
+                .clickable {
                     redsSortType =
                         if (redsSortType == SortType.Ascending) SortType.Descending else SortType.Ascending
                     viewModel.handleIntent(
                         MainIntent.SortData(
-                            TabPage.EtsTables,
+                            TabPage.Processes,
                             "reds",
                             redsSortType
                         )
                     )
-                }
-            ) {
-                Icon(
-                    imageVector = if (redsSortType == SortType.Ascending) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = "Sort Descending",
-                    modifier = Modifier
-                        .padding(0.dp),
-                    tint = Color.Black
-                )
-            }
-            IconButton(
+                },
+                //.weight(1f),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = if (redsSortType == SortType.Ascending) arrowUpIcon else arrowDownIcon,
+                contentDescription = "Sort",
                 modifier = Modifier
                     .padding(0.dp),
-                onClick = {
+                tint = Color.Black
+            )
+            Text(
+                text = "Reductions",
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .padding(0.dp),
+                //.weight(1f),
+                textAlign = TextAlign.End
+            )
+        }
+        Row(
+            modifier = Modifier
+                .clickable {
                     memSortType =
                         if (memSortType == SortType.Ascending) SortType.Descending else SortType.Ascending
                     viewModel.handleIntent(
                         MainIntent.SortData(
-                            TabPage.EtsTables,
+                            TabPage.Processes,
                             "mem",
                             memSortType
                         )
                     )
                 }
-            ) {
-                Icon(
-                    imageVector = if (memSortType == SortType.Ascending) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = "Sort Descending",
-                    modifier = Modifier
-                        .padding(0.dp),
-                    tint = Color.Black
-                )
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .weight(1f),
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Process",
-                style = MaterialTheme.typography.labelSmall,
+            Icon(
+                imageVector = if (redsSortType == SortType.Ascending) arrowUpIcon else arrowDownIcon,
+                contentDescription = "Sort",
                 modifier = Modifier
-                    .padding(0.dp)
-                    .weight(2f)
-            )
-            Text(
-                text = "Reductions",
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier
-                    .padding(0.dp)
-                    .weight(1f),
-                textAlign = TextAlign.End
+                    .padding(0.dp),
+                tint = Color.Black
             )
             Text(
                 text = "Memory",
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(0.dp)
-                    .weight(1f),
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .padding(0.dp),
+                //.weight(1f),
                 textAlign = TextAlign.End
             )
+
         }
-        Divider()
     }
+    Divider()
 }

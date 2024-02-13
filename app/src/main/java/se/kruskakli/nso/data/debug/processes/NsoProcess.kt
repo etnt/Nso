@@ -10,5 +10,5 @@ data class NsoProcess(
     val name: String,
     val pid: String,
     val reds: String,
-    @Json(name = "shared-binaries") val sharedBinaries: String
+    @Json(name = "shared-binaries") val sharedBinaries: String?
 )

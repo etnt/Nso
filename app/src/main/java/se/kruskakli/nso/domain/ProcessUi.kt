@@ -8,5 +8,5 @@ data class ProcessUi(
     val name: String,
     val pid: String,
     val reds: String,
-    val sharedBinaries: String
+    val sharedBinaries: String?
 )

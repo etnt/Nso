@@ -440,6 +440,20 @@ class MainViewModel : ViewModel() {
                             _nsoEts.value = sortedEts
                         }
                     }
+                    TabPage.Processes -> {
+                        Log.d("MainViewModel", "SortData: field=${intent.field} ${intent.type}")
+                        val sortedProcesses = when (intent.field) {
+                            "name" -> _nsoProcesses.value.sortedBy { it.name }
+                            "reds" -> _nsoProcesses.value.sortedBy { it.reds.toIntOrNull() ?: 0 }
+                            "mem" -> _nsoProcesses.value.sortedBy { it.memory.toIntOrNull() ?: 0 }
+                            else -> _nsoProcesses.value
+                        }
+                        if (intent.type == SortType.Descending) {
+                            _nsoProcesses.value = sortedProcesses.reversed()
+                        } else {
+                            _nsoProcesses.value = sortedProcesses
+                        }
+                    }
                     else -> {
                         // Do nothing
                     }
