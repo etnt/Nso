@@ -17,6 +17,7 @@ import se.kruskakli.nso.data.debug.ets.toEtsUi
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
 import se.kruskakli.nso.data.debug.inet.toInetUi
+import se.kruskakli.nso.data.debug.processes.toProcessUi
 import se.kruskakli.nso.presentation.TabPage
 
 /*
@@ -83,6 +84,10 @@ class MainViewModel : ViewModel() {
                 resetNsoAllocators()
                 getNsoAllocators()
             }
+            TabPage.Processes -> {
+                resetNsoProcesses()
+                getNsoProcesses()
+            }
             else -> {
                 // Do nothing
             }
@@ -140,6 +145,13 @@ class MainViewModel : ViewModel() {
 
     fun resetNsoAllocators() {
         _nsoAllocators.value = null
+    }
+
+    private val _nsoProcesses = MutableStateFlow(listOf<ProcessUi>())
+    val nsoProcesses: StateFlow<List<ProcessUi>> = _nsoProcesses.asStateFlow()
+
+    fun resetNsoProcesses() {
+        _nsoProcesses.value = emptyList()
     }
 
     /*
@@ -332,6 +344,30 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun getNsoProcesses() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
+            performApiCall(
+                user = _user.value,
+                password = _passwd.value,
+                apiCall = { api -> api.getNsoProcesses() },
+                onSuccess = { response ->
+                    val newProcesses = mutableListOf<ProcessUi>()
+                    response.nsoAllProcesses.forEach() {
+                        //Log.d("MainViewModel", "getNsoProcesses BODY: ${it}")
+                        val p = it.toProcessUi()
+                        newProcesses.add(p)
+                    }
+                    _nsoProcesses.value = newProcesses
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
+                }
+            )
+        }
+    }
+
     fun handleIntent(intent: MainIntent) {
         when (intent) {
             is MainIntent.ShowPackages -> {
@@ -379,6 +415,13 @@ class MainViewModel : ViewModel() {
                 if (_refresh.value || _nsoAllocators.value == null) {
                     resetNsoAllocators()
                     getNsoAllocators()
+                    setRefresh(false)
+                }
+            }
+            is MainIntent.ShowProcesses -> {
+                if (_refresh.value || _nsoProcesses.value.isEmpty()) {
+                    resetNsoProcesses()
+                    getNsoProcesses()
                     setRefresh(false)
                 }
             }

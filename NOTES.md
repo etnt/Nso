@@ -50,7 +50,7 @@ See [also](https://developer.android.com/studio/write/vector-asset-studio#svg)
 * In the new package, create a new file with a mapper function (from data to ui class), see AlarmMapper.kt
 * In the MainViewModel add the corresponding mutable/observer pair to hold the data
 * Add the corresponding network API function in NsoApi.kt
-* Create the other functions needed in the MainViewModel (e.g similar to Alarm, Inet, etc..)
+* Create the other functions needed in the MainViewModel (e.g similar to getNsoEts etc...)
 * Add an intent in MainIntent.kt
 * Add the handling of that intent in MainViewModel.kt
 * Add corresponding TabPage handling in HomeScreen.kt

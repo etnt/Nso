@@ -5,6 +5,7 @@ import se.kruskakli.nso.data.alarms.NsoAlarmList
 import se.kruskakli.nso.data.debug.allocators.Allocators
 import se.kruskakli.nso.data.debug.ets.Ets
 import se.kruskakli.nso.data.debug.inet.Inet
+import se.kruskakli.nso.data.debug.processes.NsoProcesses
 import se.kruskakli.nso.data.packages.NsoPackages
 import se.kruskakli.nso.data.devices.TailfNcsDevices
 
@@ -26,4 +27,8 @@ interface NsoApi {
 
     @GET("nso-dbg%3Anso-dbg/beam-state/memory/stats/live/allocators")
     suspend fun getNsoAllocators(): Allocators
+
+    @GET("nso-dbg%3Anso-dbg/beam-state/processes/all")
+    suspend fun getNsoProcesses(): NsoProcesses
+
 }

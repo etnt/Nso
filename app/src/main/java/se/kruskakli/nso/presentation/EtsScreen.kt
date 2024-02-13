@@ -58,7 +58,7 @@ fun EtsScreen(
             horizontalAlignment = Alignment.Start
         ) {
             Divider()
-            SortingBar(viewModel)
+            EtsSortingBar(viewModel)
             LazyColumn {
                 items(items = nsoEts) {
                     Ets(it)
@@ -70,7 +70,7 @@ fun EtsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SortingBar(
+fun EtsSortingBar(
     viewModel: MainViewModel
 ) {
     var nameSortType by remember { mutableStateOf(SortType.Ascending) }

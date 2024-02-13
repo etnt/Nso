@@ -99,6 +99,7 @@ fun HomeScreen(viewModel: MainViewModel) {
     val nsoInet by viewModel.nsoInet.collectAsState()
     val nsoEts by viewModel.nsoEts.collectAsState()
     val nsoAllocators by viewModel.nsoAllocators.collectAsState()
+    val nsoProcesses by viewModel.nsoProcesses.collectAsState()
     val nsoDbgEnabled by viewModel.nsoDbgEnabled.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -254,9 +255,6 @@ fun HomeScreen(viewModel: MainViewModel) {
                     TabPage.Debug -> {
                         AboutPage()
                     }
-                    TabPage.Processes -> {
-                        AboutPage()
-                    }
 
                     TabPage.Listeners -> {
                         viewModel.handleIntent(MainIntent.ShowInet)
@@ -285,8 +283,13 @@ fun HomeScreen(viewModel: MainViewModel) {
                         }
                     }
 
-                    TabPage.EtsTables -> {
-                        AboutPage()
+                    TabPage.Processes -> {
+                        viewModel.handleIntent(MainIntent.ShowProcesses)
+                        if (loading) {
+                            LoadingState()
+                        } else {
+                            ProcessScreen(nsoProcesses, viewModel)
+                        }
                     }
 
                     TabPage.Error -> {
