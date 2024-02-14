@@ -13,13 +13,13 @@ import com.squareup.moshi.Json
  */
 data class CdbCounters(
     val compactions: Long?,
-    @Json(name = "compaction") val compactionData: CompactionData?,
+    @Json(name = "compaction") val compaction: Compaction?,
     @Json(name = "boot-time") val bootTime: String?,
     @Json(name = "phase0-time") val phase0Time: String?,
     @Json(name = "phase1-time") val phase1Time: String?,
     @Json(name = "phase2-time") val phase2Time: String?
 ) {
-    data class CompactionData(
+    data class Compaction(
         @Json(name = "A-cdb") val ACdb: Long?,
         @Json(name = "O-cdb") val OCdb: Long?,
         @Json(name = "S-cdb") val SCdb: Long?,
