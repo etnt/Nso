@@ -1,11 +1,11 @@
 package se.kruskakli.nso.data.syscounters
 
-import se.kruskakli.nso.domain.CounterUi
+import se.kruskakli.nso.domain.SysCountersUi
 
-fun SysCounters.toUiModel(): CounterUi {
-    return CounterUi(
+fun SysCounters.toUiModel(): SysCountersUi {
+    return SysCountersUi(
         transaction = transaction.toUiModel(),
-        serviceConflicts = serviceConflicts.toUiModel(),
+        serviceConflicts = serviceConflicts?.toUiModel(),
         cdb = cdb.toUiModel(),
         device = device.toUiModel(),
         session = session.toUiModel()
@@ -14,15 +14,15 @@ fun SysCounters.toUiModel(): CounterUi {
 
 
 // Add this function to the Transaction class
-fun Transaction.toUiModel(): CounterUi.TransactionUi {
-    return CounterUi.TransactionUi(
+fun Transaction.toUiModel(): SysCountersUi.TransactionUi {
+    return SysCountersUi.TransactionUi(
         datastore = datastore.map { it.toUiModel() }
     )
 }
 
 // Add similar functions to the other nested classes
-fun Transaction.Datastore.toUiModel(): CounterUi.TransactionUi.DatastoreUi {
-    return CounterUi.TransactionUi.DatastoreUi(
+fun Transaction.Datastore.toUiModel(): SysCountersUi.TransactionUi.DatastoreUi {
+    return SysCountersUi.TransactionUi.DatastoreUi(
         name = name.toString(),
         commit = commit,
         totalTime = totalTime,
@@ -36,22 +36,22 @@ fun Transaction.Datastore.toUiModel(): CounterUi.TransactionUi.DatastoreUi {
     )
 }
 
-fun ServiceConflicts.toUiModel(): CounterUi.ServiceConflictsUi {
-    return CounterUi.ServiceConflictsUi(
+fun ServiceConflicts.toUiModel(): SysCountersUi.ServiceConflictsUi {
+    return SysCountersUi.ServiceConflictsUi(
         serviceType = serviceType.map { it?.toUiModel() }
     )
 }
 
-fun ServiceConflicts.ServiceType.toUiModel(): CounterUi.ServiceConflictsUi.ServiceTypeUi {
-    return CounterUi.ServiceConflictsUi.ServiceTypeUi(
+fun ServiceConflicts.ServiceType.toUiModel(): SysCountersUi.ServiceConflictsUi.ServiceTypeUi {
+    return SysCountersUi.ServiceConflictsUi.ServiceTypeUi(
         name = name,
         conflicts = conflicts
     )
 }
 
 
-fun CdbCounters.toUiModel(): CounterUi.CdbUi {
-    return CounterUi.CdbUi(
+fun CdbCounters.toUiModel(): SysCountersUi.CdbUi {
+    return SysCountersUi.CdbUi(
         compactions = compactions,
         compaction = compaction?.toUiModel(),
         bootTime = bootTime,
@@ -61,8 +61,8 @@ fun CdbCounters.toUiModel(): CounterUi.CdbUi {
     )
 }
 
-fun CdbCounters.Compaction.toUiModel(): CounterUi.CdbUi.CompactionUi {
-    return CounterUi.CdbUi.CompactionUi(
+fun CdbCounters.Compaction.toUiModel(): SysCountersUi.CdbUi.CompactionUi {
+    return SysCountersUi.CdbUi.CompactionUi(
         ACdb = ACdb,
         OCdb = OCdb,
         SCdb = SCdb,
@@ -70,8 +70,8 @@ fun CdbCounters.Compaction.toUiModel(): CounterUi.CdbUi.CompactionUi {
     )
 }
 
-fun DeviceCounters.toUiModel(): CounterUi.DeviceUi {
-    return CounterUi.DeviceUi(
+fun DeviceCounters.toUiModel(): SysCountersUi.DeviceUi {
+    return SysCountersUi.DeviceUi(
         connect = connect,
         connectFailed = connectFailed,
         syncFrom = syncFrom,
@@ -80,8 +80,8 @@ fun DeviceCounters.toUiModel(): CounterUi.DeviceUi {
     )
 }
 
-fun SessionCounters.toUiModel(): CounterUi.SessionUi {
-    return CounterUi.SessionUi(
+fun SessionCounters.toUiModel(): SysCountersUi.SessionUi {
+    return SysCountersUi.SessionUi(
         total = total,
         netconfTotal = netconfTotal,
         restconfTotal = restconfTotal,

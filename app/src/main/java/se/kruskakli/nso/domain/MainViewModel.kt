@@ -18,6 +18,7 @@ import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
 import se.kruskakli.nso.data.debug.inet.toInetUi
 import se.kruskakli.nso.data.debug.processes.toProcessUi
+import se.kruskakli.nso.data.syscounters.toUiModel
 import se.kruskakli.nso.presentation.TabPage
 
 /*
@@ -152,6 +153,13 @@ class MainViewModel : ViewModel() {
 
     fun resetNsoProcesses() {
         _nsoProcesses.value = emptyList()
+    }
+
+    private val _nsoSysCounters = MutableStateFlow<SysCountersUi?>(null)
+    val nsoSysCounters: StateFlow<SysCountersUi?> = _nsoSysCounters.asStateFlow()
+
+    fun resetNsoSysCounters() {
+        _nsoSysCounters.value = null
     }
 
     /*
@@ -359,6 +367,26 @@ class MainViewModel : ViewModel() {
                         newProcesses.add(p)
                     }
                     _nsoProcesses.value = newProcesses
+                    _loading.value = false
+                },
+                onError = {
+                    _loading.value = false
+                }
+            )
+        }
+    }
+
+    fun getSysCounters() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _loading.value = true
+            performApiCall(
+                user = _user.value,
+                password = _passwd.value,
+                apiCall = { api -> api.getSysCounters() },
+                onSuccess = { response ->
+                    Log.d("MainViewModel", "getSysCounters BODY: ${response}")
+                    _nsoSysCounters.value = response.sysCounters.toUiModel()
+                    Log.d("MainViewModel", "getSysCounters UI: ${_nsoSysCounters.value}")
                     _loading.value = false
                 },
                 onError = {

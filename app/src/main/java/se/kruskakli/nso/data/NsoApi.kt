@@ -8,6 +8,8 @@ import se.kruskakli.nso.data.debug.inet.Inet
 import se.kruskakli.nso.data.debug.processes.NsoProcesses
 import se.kruskakli.nso.data.packages.NsoPackages
 import se.kruskakli.nso.data.devices.TailfNcsDevices
+import se.kruskakli.nso.data.syscounters.NsoSysCounters
+
 
 interface NsoApi {
     @GET("tailf-ncs%3Apackages")
@@ -30,5 +32,8 @@ interface NsoApi {
 
     @GET("nso-dbg%3Anso-dbg/beam-state/processes/all")
     suspend fun getNsoProcesses(): NsoProcesses
+
+    @GET("tailf-ncs%3Ametric/sysadmin/counter")
+    suspend fun getSysCounters(): NsoSysCounters
 
 }

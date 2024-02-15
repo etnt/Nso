@@ -8,10 +8,5 @@ data class ServiceConflicts(
     data class ServiceType(
         val name: String,
         val conflicts: Long
-    ) {
-        companion object {
-            const val NAME_DESCRIPTION = "Type of the service."
-            const val CONFLICTS_DESCRIPTION = "Number of transaction conflicts with this service type."
-        }
-    }
+    ) 
 }
