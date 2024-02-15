@@ -24,15 +24,15 @@ fun Transaction.toUiModel(): SysCountersUi.TransactionUi {
 fun Transaction.Datastore.toUiModel(): SysCountersUi.TransactionUi.DatastoreUi {
     return SysCountersUi.TransactionUi.DatastoreUi(
         name = name.toString(),
-        commit = commit,
+        commit = commit.toString(),
         totalTime = totalTime,
         serviceTime = serviceTime,
         validationTime = validationTime,
         globalLockTime = globalLockTime,
         globalLockWaitTime = globalLockWaitTime,
-        aborts = aborts,
-        conflicts = conflicts,
-        retries = retries
+        aborts = aborts?.toString(),
+        conflicts = conflicts?.toString(),
+        retries = retries?.toString()
     )
 }
 

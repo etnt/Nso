@@ -64,6 +64,7 @@ import se.kruskakli.presentation.RememberDevices
 import se.kruskakli.presentation.RememberPackages
 import se.kruskakli.presentation.RememberAlarms
 import androidx.compose.ui.res.vectorResource
+import se.kruskakli.nso.R.drawable.ic_counters
 
 
 @Composable
@@ -100,6 +101,7 @@ fun HomeScreen(viewModel: MainViewModel) {
     val nsoEts by viewModel.nsoEts.collectAsState()
     val nsoAllocators by viewModel.nsoAllocators.collectAsState()
     val nsoProcesses by viewModel.nsoProcesses.collectAsState()
+    val nsoSysCounters by viewModel.nsoSysCounters.collectAsState()
     val nsoDbgEnabled by viewModel.nsoDbgEnabled.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -292,6 +294,15 @@ fun HomeScreen(viewModel: MainViewModel) {
                         }
                     }
 
+                    TabPage.SysCounters -> {
+                        viewModel.handleIntent(MainIntent.ShowSysCounters)
+                        if (loading) {
+                            LoadingState()
+                        } else {
+                            SysCountersScreen(nsoSysCounters)
+                        }
+                    }
+
                     TabPage.Error -> {
                         ErrorPage(apiError, viewModel)
                     }
@@ -384,10 +395,10 @@ private fun MenuItems(): List<NavigationItem> {
             unSelectedIcon = Icons.Outlined.Settings
         ),
         NavigationItem(
-            title = "Packages",
-            page = TabPage.Packages,
-            selectedIcon = RememberPackages(),
-            unSelectedIcon = RememberPackages()
+            title = "Alarms",
+            page = TabPage.Alarms,
+            selectedIcon = RememberAlarms(),
+            unSelectedIcon = RememberAlarms()
         ),
         NavigationItem(
             title = "Devices",
@@ -396,10 +407,16 @@ private fun MenuItems(): List<NavigationItem> {
             unSelectedIcon = RememberDevices()
         ),
         NavigationItem(
-            title = "Alarms",
-            page = TabPage.Alarms,
-            selectedIcon = RememberAlarms(),
-            unSelectedIcon = RememberAlarms()
+            title = "Packages",
+            page = TabPage.Packages,
+            selectedIcon = RememberPackages(),
+            unSelectedIcon = RememberPackages()
+        ),
+        NavigationItem(
+            title = "System Counters",
+            page = TabPage.SysCounters,
+            selectedIcon = ImageVector.vectorResource(id = ic_counters),
+            unSelectedIcon = ImageVector.vectorResource(id = ic_counters),
         ),
         NavigationItem(
             title = "About",

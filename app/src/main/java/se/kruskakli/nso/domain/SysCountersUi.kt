@@ -13,15 +13,15 @@ data class SysCountersUi(
     ) {
         data class DatastoreUi(
             val name: String,
-            val commit: Long?,
+            val commit: String,
             val totalTime: String?,
             val serviceTime: String?,
             val validationTime: String?,
             val globalLockTime: String?,
             val globalLockWaitTime: String?,
-            val aborts: Long?,
-            val conflicts: Long?,
-            val retries: Long?
+            val aborts: String?,
+            val conflicts: String?,
+            val retries: String?
         ) {
             companion object {
                 const val NAME_DESCRIPTION = "Datastore name: 'operational' or 'running'"

@@ -89,6 +89,10 @@ class MainViewModel : ViewModel() {
                 resetNsoProcesses()
                 getNsoProcesses()
             }
+            TabPage.SysCounters -> {
+                resetNsoSysCounters()
+                getSysCounters()
+            }
             else -> {
                 // Do nothing
             }
@@ -384,9 +388,9 @@ class MainViewModel : ViewModel() {
                 password = _passwd.value,
                 apiCall = { api -> api.getSysCounters() },
                 onSuccess = { response ->
-                    Log.d("MainViewModel", "getSysCounters BODY: ${response}")
+                    //Log.d("MainViewModel", "getSysCounters BODY: ${response}")
                     _nsoSysCounters.value = response.sysCounters.toUiModel()
-                    Log.d("MainViewModel", "getSysCounters UI: ${_nsoSysCounters.value}")
+                    //Log.d("MainViewModel", "getSysCounters UI: ${_nsoSysCounters.value}")
                     _loading.value = false
                 },
                 onError = {
@@ -450,6 +454,13 @@ class MainViewModel : ViewModel() {
                 if (_refresh.value || _nsoProcesses.value.isEmpty()) {
                     resetNsoProcesses()
                     getNsoProcesses()
+                    setRefresh(false)
+                }
+            }
+            is MainIntent.ShowSysCounters -> {
+                if (_refresh.value || _nsoSysCounters.value == null) {
+                    resetNsoSysCounters()
+                    getSysCounters()
                     setRefresh(false)
                 }
             }
