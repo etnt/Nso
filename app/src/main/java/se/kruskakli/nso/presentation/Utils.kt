@@ -1,6 +1,7 @@
 package se.kruskakli.nso.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +18,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontStyle
 
 
 @Composable
@@ -34,10 +40,21 @@ fun Divider() {
 }
 
 
+
 data class Field(
     val label: String,
     val value: String?
 )
+
+data class FieldWithHelp(
+    val label: String,
+    val value: String,
+    val help: String = ""
+)
+
+
+
+
 
 @Composable
 fun FieldComponent(
@@ -67,11 +84,60 @@ fun FieldComponent(
     }
 }
 
+@Composable
+fun FieldComponentWithHelp(
+    field: FieldWithHelp,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    modifier: Modifier = Modifier
+) {
+    var show by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, top = 4.dp, end = 4.dp, bottom = 0.dp)
+            .clickable { show = !show }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${field.label}:",
+                color = textColor,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp),
+                text = field.value ?: "",
+                color = textColor,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+        if (show) {
+            Text(
+                modifier = Modifier
+                    .padding(start = 16.dp),
+                text = field.help ?: "",
+                fontStyle = FontStyle.Italic,
+                color = textColor,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+/*
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 fun FieldComponentPreview() {
     FieldComponent(Field("Label", "Value"))
 }
+*/
+
 
 @Composable
 fun InsideCard(
@@ -108,6 +174,43 @@ fun InsideCard(
     }
 }
 
+@Composable
+fun InsideCardWithHelp(
+    header: String,
+    fields: List<FieldWithHelp?>,
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = MaterialTheme.colorScheme.surface,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 2.dp, bottom = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color)
+                .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
+        ) {
+            Text(
+                text = header,
+                color = textColor,
+                style = MaterialTheme.typography.titleSmall
+            )
+            fields.forEach { field ->
+                field?.let {
+                    FieldComponentWithHelp(
+                        field = it,
+                        textColor = textColor
+                    )
+                }
+            }
+        }
+    }
+}
+
 /*
    Prompt:
    The selected code consists of a Composable that will create an OutlinedCard.
@@ -122,8 +225,11 @@ fun OutlinedCards(
     cards: List<@Composable () -> Unit>,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
     color: Color = MaterialTheme.colorScheme.surface,
+    show: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    var showAll by remember { mutableStateOf(show) }
+
     OutlinedCard(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
@@ -133,6 +239,7 @@ fun OutlinedCards(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { showAll = !showAll }
                 .background(color)
                 .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
         ) {
@@ -141,11 +248,13 @@ fun OutlinedCards(
                 color = textColor,
                 style = MaterialTheme.typography.titleSmall
             )
-            fields.forEach { field ->
-                FieldComponent(field, textColor)
-            }
-            cards.forEach { card ->
-                card()
+            if (showAll) {
+                fields.forEach { field ->
+                    FieldComponent(field, textColor)
+                }
+                cards.forEach { card ->
+                    card()
+                }
             }
         }
     }

@@ -81,11 +81,11 @@ data class SysCountersUi(
     }
 
     data class DeviceUi(
-        val connect: Long?,
-        val connectFailed: Long?,
-        val syncFrom: Long?,
-        val syncTo: Long?,
-        val outOfSync: Long?
+        val connect: String?,
+        val connectFailed: String?,
+        val syncFrom: String?,
+        val syncTo: String?,
+        val outOfSync: String?
     ) {
         companion object {
             const val CONNECT_DESCRIPTION = "Total number of device connects."
@@ -97,12 +97,12 @@ data class SysCountersUi(
     }
 
     data class SessionUi(
-        val total: Long?,
-        val netconfTotal: Long?,
-        val restconfTotal: Long?,
-        val jsonrpcTotal: Long?,
-        val snmpTotal: Long?,
-        val cliTotal: Long?
+        val total: String?,
+        val netconfTotal: String?,
+        val restconfTotal: String?,
+        val jsonrpcTotal: String?,
+        val snmpTotal: String?,
+        val cliTotal: String?
     ) {
         companion object {
             const val TOTAL_DESCRIPTION = "Total number of northbound sessions completed."

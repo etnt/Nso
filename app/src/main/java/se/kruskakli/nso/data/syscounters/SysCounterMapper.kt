@@ -72,21 +72,21 @@ fun CdbCounters.Compaction.toUiModel(): SysCountersUi.CdbUi.CompactionUi {
 
 fun DeviceCounters.toUiModel(): SysCountersUi.DeviceUi {
     return SysCountersUi.DeviceUi(
-        connect = connect,
-        connectFailed = connectFailed,
-        syncFrom = syncFrom,
-        syncTo = syncTo,
-        outOfSync = outOfSync
+        connect = connect?.let{it.toString()},
+        connectFailed = connectFailed?.let{it.toString()},
+        syncFrom = syncFrom?.let{it.toString()},
+        syncTo = syncTo?.let{it.toString()},
+        outOfSync = outOfSync?.let{it.toString()}
     )
 }
 
 fun SessionCounters.toUiModel(): SysCountersUi.SessionUi {
     return SysCountersUi.SessionUi(
-        total = total,
-        netconfTotal = netconfTotal,
-        restconfTotal = restconfTotal,
-        jsonrpcTotal = jsonrpcTotal,
-        snmpTotal = snmpTotal,
-        cliTotal = cliTotal
+        total = total?.let{it.toString()},
+        netconfTotal = netconfTotal?.let{it.toString()},
+        restconfTotal = restconfTotal?.let{it.toString()},
+        jsonrpcTotal = jsonrpcTotal?.let{it.toString()},
+        snmpTotal = snmpTotal?.let{it.toString()},
+        cliTotal = cliTotal?.let{it.toString()}
     )
 }
