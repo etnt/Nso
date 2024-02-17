@@ -6,7 +6,7 @@ data class ServiceConflicts(
     val serviceType: List<ServiceType?>
 ) {
     data class ServiceType(
-        val name: String,
-        val conflicts: Long
+        val name: String?,
+        val conflicts: Long?
     ) 
 }

@@ -45,14 +45,14 @@ fun ServiceConflicts.toUiModel(): SysCountersUi.ServiceConflictsUi {
 fun ServiceConflicts.ServiceType.toUiModel(): SysCountersUi.ServiceConflictsUi.ServiceTypeUi {
     return SysCountersUi.ServiceConflictsUi.ServiceTypeUi(
         name = name,
-        conflicts = conflicts
+        conflicts = conflicts?.toString()
     )
 }
 
 
 fun CdbCounters.toUiModel(): SysCountersUi.CdbUi {
     return SysCountersUi.CdbUi(
-        compactions = compactions?.let{it.toString()},
+        compactions = compactions?.toString(),
         compaction = compaction?.toUiModel(),
         bootTime = bootTime,
         phase0Time = phase0Time,
@@ -63,30 +63,30 @@ fun CdbCounters.toUiModel(): SysCountersUi.CdbUi {
 
 fun CdbCounters.Compaction.toUiModel(): SysCountersUi.CdbUi.CompactionUi {
     return SysCountersUi.CdbUi.CompactionUi(
-        ACdb = ACdb?.let{it.toString()},
-        OCdb = OCdb?.let{it.toString()},
-        SCdb = SCdb?.let{it.toString()},
-        total = total?.let{it.toString()}
+        ACdb = ACdb?.toString(),
+        OCdb = OCdb?.toString(),
+        SCdb = SCdb?.toString(),
+        total = total?.toString()
     )
 }
 
 fun DeviceCounters.toUiModel(): SysCountersUi.DeviceUi {
     return SysCountersUi.DeviceUi(
-        connect = connect?.let{it.toString()},
-        connectFailed = connectFailed?.let{it.toString()},
-        syncFrom = syncFrom?.let{it.toString()},
-        syncTo = syncTo?.let{it.toString()},
-        outOfSync = outOfSync?.let{it.toString()}
+        connect = connect?.toString(),
+        connectFailed = connectFailed?.toString(),
+        syncFrom = syncFrom?.toString(),
+        syncTo = syncTo?.toString(),
+        outOfSync = outOfSync?.toString()
     )
 }
 
 fun SessionCounters.toUiModel(): SysCountersUi.SessionUi {
     return SysCountersUi.SessionUi(
-        total = total?.let{it.toString()},
-        netconfTotal = netconfTotal?.let{it.toString()},
-        restconfTotal = restconfTotal?.let{it.toString()},
-        jsonrpcTotal = jsonrpcTotal?.let{it.toString()},
-        snmpTotal = snmpTotal?.let{it.toString()},
-        cliTotal = cliTotal?.let{it.toString()}
+        total = total?.toString(),
+        netconfTotal = netconfTotal?.toString(),
+        restconfTotal = restconfTotal?.toString(),
+        jsonrpcTotal = jsonrpcTotal?.toString(),
+        snmpTotal = snmpTotal?.toString(),
+        cliTotal = cliTotal?.toString()
     )
 }

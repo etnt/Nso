@@ -27,7 +27,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.withStyle
 
 
 @Composable
@@ -211,6 +215,29 @@ fun InsideCardWithHelp(
     }
 }
 
+// Build a text string with an optional annotation
+@Composable
+fun annotatedText(
+    text: String,
+    annotation: String? = null
+) : AnnotatedString
+{
+    val annotatedText = buildAnnotatedString {
+        append(text)
+        if (annotation != null) {
+            withStyle(
+                style = SpanStyle(
+                    fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                    fontStyle = FontStyle.Italic,
+                )
+            ) {
+                append(annotation)
+            }
+        }
+    }
+    return annotatedText
+}
+
 /*
    Prompt:
    The selected code consists of a Composable that will create an OutlinedCard.
@@ -223,6 +250,7 @@ fun OutlinedCards(
     header: String,
     fields: List<Field>,
     cards: List<@Composable () -> Unit>,
+    annotatedHeader: AnnotatedString? = null,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
     color: Color = MaterialTheme.colorScheme.surface,
     show: Boolean = true,
@@ -243,8 +271,10 @@ fun OutlinedCards(
                 .background(color)
                 .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
         ) {
+            // An optional annotated header takes precedence over the header!
+            val text = annotatedHeader ?: AnnotatedString(header)
             Text(
-                text = header,
+                text = text,
                 color = textColor,
                 style = MaterialTheme.typography.titleSmall
             )

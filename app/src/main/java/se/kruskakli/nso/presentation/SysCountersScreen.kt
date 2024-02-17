@@ -12,7 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import se.kruskakli.nso.domain.SysCountersUi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import se.kruskakli.nso.domain.SysCountersUi.TransactionUi.DatastoreUi
 import se.kruskakli.nso.domain.SysCountersUi.SessionUi
 import se.kruskakli.nso.domain.SysCountersUi.DeviceUi
@@ -39,7 +46,7 @@ fun SysCountersScreen(
             Divider()
             LazyColumn {
                 item { Transaction(nsoSysCounters?.transaction) }
-                //item { ServiceConflicts(nsoSysCounters?.serviceConflicts) }
+                item { ServiceConflicts(nsoSysCounters?.serviceConflicts) }
                 item { Cdb(nsoSysCounters?.cdb) }
                 item { Device(nsoSysCounters?.device) }
                 item { Session(nsoSysCounters?.session) }
@@ -49,8 +56,53 @@ fun SysCountersScreen(
 }
 
 @Composable
+fun ServiceConflicts(
+    serviceConflicts: SysCountersUi.ServiceConflictsUi?,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(0.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        val cards: List<@Composable () -> Unit> = serviceConflicts?.serviceType?.map { serviceType ->
+            {
+                InsideCardWithHelp(
+                    header = "Service Type Conflicts:",
+                    fields = listOf(
+                        serviceType?.name?.let {
+                            FieldWithHelp("Name:", it, SysCountersUi.ServiceConflictsUi.ServiceTypeUi.NAME_DESCRIPTION)
+                        },
+                        serviceType?.conflicts?.let {
+                            FieldWithHelp("Conflicts:", it, SysCountersUi.ServiceConflictsUi.ServiceTypeUi.CONFLICTS_DESCRIPTION)
+                        }
+                    ),
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                )
+            }
+        } ?: emptyList()
+        val annotation = if (serviceConflicts?.serviceType.isNullOrEmpty()) "(no service conflicts to show)" else null
+        val annHeader = annotatedText("Service Conflicts: ", annotation)
+        OutlinedCards(
+            header = "Service Conflicts: ",
+            annotatedHeader = annHeader,
+            fields = emptyList(),
+            cards = cards,
+            textColor = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.surface,
+            show = false
+        )
+    }
+}
+
+
+
+@Composable
 fun Cdb(
-    cdb: SysCountersUi.CdbUi?,
+    cdb: CdbUi?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -66,22 +118,28 @@ fun Cdb(
                     header = "CDB:",
                     fields = listOf(
                         cdb?.compactions?.let {
-                            FieldWithHelp("Compactions:", it, SysCountersUi.CdbUi.COMPACT_DESCRIPTION)
+                            FieldWithHelp("Compactions:", it, CdbUi.COMPACT_DESCRIPTION)
                         },
-                        //cdb?.compaction?.let {
-                        //    FieldWithHelp("Compaction:", it.toUiModel(), SysCountersUi.CdbUi.COMPACTION_DESCRIPTION)
-                        //},
+                        cdb?.compaction?.ACdb?.let {
+                            FieldWithHelp("A-CDB Compactions:", it, CdbUi.CompactionUi.A_CDB_DESCRIPTION)
+                        },
+                        cdb?.compaction?.OCdb?.let {
+                            FieldWithHelp("O-CDB Compactions:", it, CdbUi.CompactionUi.O_CDB_DESCRIPTION)
+                        },
+                        cdb?.compaction?.SCdb?.let {
+                            FieldWithHelp("S-CDB Compactions:", it, CdbUi.CompactionUi.S_CDB_DESCRIPTION)
+                        },
                         cdb?.bootTime?.let {
-                            FieldWithHelp("Boot time:", "${it}", SysCountersUi.CdbUi.BOOT_TIME_DESCRIPTION)
+                            FieldWithHelp("Boot time:", it, CdbUi.BOOT_TIME_DESCRIPTION)
                         },
                         cdb?.phase0Time?.let {
-                            FieldWithHelp("Phase 0 time:", "${it}", SysCountersUi.CdbUi.PHASE0_TIME_DESCRIPTION)
+                            FieldWithHelp("Phase 0 time:", it, CdbUi.PHASE0_TIME_DESCRIPTION)
                         },
                         cdb?.phase1Time?.let {
-                            FieldWithHelp("Phase 1 time:", "${it}", SysCountersUi.CdbUi.PHASE1_TIME_DESCRIPTION)
+                            FieldWithHelp("Phase 1 time:", it, CdbUi.PHASE1_TIME_DESCRIPTION)
                         },
                         cdb?.phase2Time?.let {
-                            FieldWithHelp("Phase 2 time:", "${it}", SysCountersUi.CdbUi.PHASE2_TIME_DESCRIPTION)
+                            FieldWithHelp("Phase 2 time:", it, CdbUi.PHASE2_TIME_DESCRIPTION)
                         }
                     ),
                     textColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -126,13 +184,13 @@ fun Device(
                             FieldWithHelp("Connect fail:", it, DeviceUi.CONNECT_FAILED_DESCRIPTION)
                         },
                         device?.syncFrom?.let {
-                            FieldWithHelp("Sync from:", it, SysCountersUi.DeviceUi.SYNC_FROM_DESCRIPTION)
+                            FieldWithHelp("Sync from:", it, DeviceUi.SYNC_FROM_DESCRIPTION)
                         },
                         device?.syncTo?.let {
-                            FieldWithHelp("Sync to:", it, SysCountersUi.DeviceUi.SYNC_TO_DESCRIPTION)
+                            FieldWithHelp("Sync to:", it, DeviceUi.SYNC_TO_DESCRIPTION)
                         },
                         device?.outOfSync?.let {
-                            FieldWithHelp("Out of sync:", it, SysCountersUi.DeviceUi.OUT_OF_SYNC_DESCRIPTION)
+                            FieldWithHelp("Out of sync:", it, DeviceUi.OUT_OF_SYNC_DESCRIPTION)
                         }
                     ),
                     textColor = MaterialTheme.colorScheme.onSurfaceVariant,

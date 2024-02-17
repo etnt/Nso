@@ -42,8 +42,8 @@ data class SysCountersUi(
         val serviceType: List<ServiceTypeUi?>
     ) {
         data class ServiceTypeUi(
-            val name: String,
-            val conflicts: Long
+            val name: String?,
+            val conflicts: String?
         ) {
             companion object {
                 const val NAME_DESCRIPTION = "Type of the service."
