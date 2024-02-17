@@ -1,29 +1,41 @@
 [
   {
-    "version": "1.0.0",
-    "date": "2022-01-01",
+    "version": "0.2.0",
+    "date": "2024-02-17",
     "textPieces": [
       {
         "type": "Paragraph",
-        "text": "This is a paragraph."
+        "text": "This is the first real release of NSO Mobile. It is still very much a work in progress, but it is now at a point where it can be useful for some people. It contains the following features:"
       },
       {
         "type": "BulletList",
-        "items": ["Item 1", "Item 2", "Item 3"]
+        "items": ["View alarms",
+                  "View devices",
+                  "View packages",
+                  "View system counters",
+                  "View debug info"]
+      },
+      {
+        "type": "Paragraph",
+        "text": "For devices and packages, not all of the information is shown yet, but it is a start."
+      },
+      {
+        "type": "Paragraph",
+        "text": "To view debug info, the nso_dbg package must be loaded in NSO."
       }
     ]
   },
   {
-    "version": "1.0.1",
-    "date": "2022-01-02",
+    "version": "0.1.0",
+    "date": "2024-02-06",
     "textPieces": [
       {
         "type": "Paragraph",
-        "text": "This is another paragraph."
+        "text": "NSO Mobile is an experimental application that allows you to view the alarms, devices, packages and debug info from your NSO system."
       },
       {
-        "type": "BulletList",
-        "items": ["Item 4", "Item 5", "Item 6"]
+        "type": "Paragraph",
+        "text": "It is built with Kotlin and Jetpack Compose, mainly as an exercise in learning these technologies."
       }
     ]
   }

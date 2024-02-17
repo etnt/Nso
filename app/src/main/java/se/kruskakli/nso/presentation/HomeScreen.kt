@@ -64,7 +64,14 @@ import se.kruskakli.presentation.RememberDevices
 import se.kruskakli.presentation.RememberPackages
 import se.kruskakli.presentation.RememberAlarms
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.withStyle
 import se.kruskakli.nso.R.drawable.ic_counters
+import se.kruskakli.nso.data.releasenote.ReleaseNote
+import se.kruskakli.nso.data.releasenote.TextPiece
+import se.kruskakli.nso.domain.SysCountersUi
 
 
 @Composable
@@ -102,6 +109,7 @@ fun HomeScreen(viewModel: MainViewModel) {
     val nsoAllocators by viewModel.nsoAllocators.collectAsState()
     val nsoProcesses by viewModel.nsoProcesses.collectAsState()
     val nsoSysCounters by viewModel.nsoSysCounters.collectAsState()
+    val releaseNotes by viewModel.releaseNotes.collectAsState()
     val nsoDbgEnabled by viewModel.nsoDbgEnabled.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -251,11 +259,7 @@ fun HomeScreen(viewModel: MainViewModel) {
                     }
 
                     TabPage.About -> {
-                        AboutPage()
-                    }
-
-                    TabPage.Debug -> {
-                        AboutPage()
+                        AboutPage(releaseNotes)
                     }
 
                     TabPage.Listeners -> {
@@ -459,33 +463,91 @@ private fun MenuItems(): List<NavigationItem> {
 }
 
 @Composable
-fun AboutPage() {
-    Row(
+fun AboutPage(
+    releaseNotes: List<ReleaseNote>
+) {
+    ReleaseNotes(releaseNotes)
+}
+
+@Composable
+fun ReleaseNotes(
+    releaseNotes: List<ReleaseNote>
+) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 30.dp),
-        horizontalArrangement = Arrangement.Center
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Card(
-            shape = RoundedCornerShape(8.dp),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 4.dp
+        Log.d("MainActivity", "ReleaseNotes: $releaseNotes")
+        releaseNotes.forEach { releaseNote ->
+            val cards: List<@Composable () -> Unit> = listOf(
+                {
+                    TextDisplay(releaseNote.textPieces)
+                }
             )
-        ) {
-            val text = """
-            NSO Mobile is an experimental application that allows
-            you to view the alarms, devices, packages and debug
-            info from your NSO system.
-             
-            It is built with Kotlin and Jetpack Compose, mainly
-            as an exercise in learning these technologies.
-        """.trimIndent()
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(8.dp)
+            val annotatedText = buildAnnotatedString {
+                append("Release: ")
+                withStyle(
+                    style = SpanStyle(
+                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    ) {
+                    append(releaseNote.version)
+                }
+                append(" Date: ")
+                withStyle(
+                    style = SpanStyle(
+                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    append(releaseNote.date)
+                }
+            }
+            OutlinedCards(
+                header = "",
+                fields = emptyList(),
+                cards = cards,
+                annotatedHeader = annotatedText,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.surface,
+                show = false
             )
+        }
+    }
+}
+
+@Composable
+fun TextDisplay(textPieces: List<TextPiece>) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        textPieces.forEach { textPiece ->
+            when (textPiece) {
+                is TextPiece.Paragraph -> {
+                    Text(
+                        text = textPiece.text,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+                is TextPiece.BulletList -> {
+                    textPiece.items.forEach { item ->
+                        Text(
+                            text = "\u2022 ${item}",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .padding(start = 8.dp),
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

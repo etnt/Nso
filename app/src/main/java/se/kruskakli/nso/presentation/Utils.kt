@@ -318,38 +318,3 @@ fun LoadingState() {
     }
 }
 
-/* 
-
-class TextPieceAdapter {
-    @FromJson
-    fun fromJson(reader: JsonReader): TextPiece {
-        val jsonAdapter = Moshi.Builder().build().adapter<Any>(Any::class.java)
-        val map = jsonAdapter.fromJson(reader) as Map<String, Any>
-
-        return when (map["type"] as String) {
-            "Paragraph" -> TextPiece.Paragraph(map["text"] as String)
-            "BulletList" -> TextPiece.BulletList(map["items"] as List<String>)
-            else -> throw IllegalArgumentException("Unknown type: ${map["type"]}")
-        }
-    }
-}
-
-@Composable
-fun TextDisplay(textPieces: List<TextPiece>) {
-    Column {
-        textPieces.forEach { textPiece ->
-            when (textPiece) {
-                is TextPiece.Paragraph -> {
-                    Text(text = textPiece.text)
-                }
-                is TextPiece.BulletList -> {
-                    textPiece.items.forEach { item ->
-                        Text(text = "\u2022 ${item}")
-                    }
-                }
-            }
-        }
-    }
-}
-
-*/

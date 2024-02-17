@@ -60,4 +60,33 @@ See [also](https://developer.android.com/studio/write/vector-asset-studio#svg)
 * Add a new menu item in HomeScreen.kt
 * Add the new screen composable to view the data (e.g see AlarmsScreen.kt)
 
+## Build an APK for sharing (outside Google Play)
+
+To create an Android App Bundle in Android Studio, follow these steps:
+
+1. Click on the Build menu in the Android Studio toolbar.
+2. Select Build Bundle(s) / APK(s).
+3. Click on Build Bundle(s)
+
+Android Studio will then build your APK and show a notification when the build is complete. Click on the locate or event log link in the notification to find the APK file. The APK file will typically be located in the app/build/outputs/apk/ directory in your project.
+
+To generate APKs from an Android App Bundle using bundletool, follow these steps:
+
+1. Download the latest [bundletool](https://github.com/google/bundletool/releases)
+
+2. Generate APKs: Open a terminal and navigate to the directory where you downloaded bundletool. Run the following command to generate APKs from your App Bundle (note: replace 1.15.6 with whatever latest version you have downloaded):
+
+    java -jar bundletool-all-1.15.6.jar build-apks --bundle=../AndroidStudioProjects/Nso/app/build/outputs/bundle/debug/app-debug.aab --output=nso_mobile_<version>.apks
+
+3. Extract APKs: The build-apks command generates a .apks file, which is a ZIP file that contains all the APKs for your app. To extract the APKs, you can rename the .apks file to .zip and extract it using any ZIP tool.
+
+4. Install APKs: To install the APKs on a device, you can use the install-apks command (replace /MyApp/my_app.apks with the path to your .apks file):
+
+    java -jar bundletool-all-1.15.6.jar install-apks --apks=/MyApp/my_app.apks
+
+
+Note: The device needs to be connected to your machine via USB and you need to have USB debugging enabled on the device.
+
+
+
 

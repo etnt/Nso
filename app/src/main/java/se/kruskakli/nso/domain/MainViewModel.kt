@@ -72,8 +72,7 @@ class MainViewModel : ViewModel() {
         val jsonAdapter = moshi.adapter<List<ReleaseNote>>(Types.newParameterizedType(List::class.java, ReleaseNote::class.java))
 
         val relNotes = jsonAdapter.fromJson(json)
-        Log.d("MainViewModel", "Release notes: $relNotes")
-
+        //Log.d("MainViewModel", "Release notes: $relNotes")
         return relNotes ?: emptyList()
     }
     
