@@ -53,29 +53,31 @@ data class SysCountersUi(
     }
 
     data class CdbUi(
-        val compactions: Long?,
+        val compactions: String?,
         val compaction: CompactionUi?,
         val bootTime: String?,
         val phase0Time: String?,
         val phase1Time: String?,
         val phase2Time: String?
     ) {
+        companion object {
+            const val COMPACT_DESCRIPTION = "Total number of CDB compactions."
+            const val BOOT_TIME_DESCRIPTION = "Total amount of time spent in boot."
+            const val PHASE0_TIME_DESCRIPTION = "Total amount of time spent in startup phase0."
+            const val PHASE1_TIME_DESCRIPTION = "Total amount of time spent in startup phase1."
+            const val PHASE2_TIME_DESCRIPTION = "Total amount of time spent in startup phase2."
+        }
         data class CompactionUi(
-            val ACdb: Long?,
-            val OCdb: Long?,
-            val SCdb: Long?,
-            val total: Long?
+            val ACdb: String?,
+            val OCdb: String?,
+            val SCdb: String?,
+            val total: String?
         ) {
             companion object {
-                const val COMPACT_DESCRIPTION = "Total number of CDB compactions."
                 const val A_CDB_DESCRIPTION = "Number of CDB configuration datastore compactions."
                 const val O_CDB_DESCRIPTION = "Number of CDB operational datastore compactions."
                 const val S_CDB_DESCRIPTION = "Number of CDB snapshot datastore compactions."
                 const val TOTAL_DESCRIPTION = "Total number of CDB compactions."
-                const val BOOT_TIME_DESCRIPTION = "Total amount of time spent in boot."
-                const val PHASE0_TIME_DESCRIPTION = "Total amount of time spent in startup phase0."
-                const val PHASE1_TIME_DESCRIPTION = "Total amount of time spent in startup phase1."
-                const val PHASE2_TIME_DESCRIPTION = "Total amount of time spent in startup phase2."
             }
         }
     }

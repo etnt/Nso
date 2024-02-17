@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import se.kruskakli.nso.domain.SysCountersUi.TransactionUi.DatastoreUi
 import se.kruskakli.nso.domain.SysCountersUi.SessionUi
 import se.kruskakli.nso.domain.SysCountersUi.DeviceUi
+import se.kruskakli.nso.domain.SysCountersUi.CdbUi
 
 
 @Composable
@@ -38,14 +39,68 @@ fun SysCountersScreen(
             Divider()
             LazyColumn {
                 item { Transaction(nsoSysCounters?.transaction) }
-                //ServiceConflicts { nsoSysCounters?.serviceConflicts) }
-                //Cdb { nsoSysCounters?.cdb }
+                //item { ServiceConflicts(nsoSysCounters?.serviceConflicts) }
+                item { Cdb(nsoSysCounters?.cdb) }
                 item { Device(nsoSysCounters?.device) }
                 item { Session(nsoSysCounters?.session) }
             }
         }
     }
 }
+
+@Composable
+fun Cdb(
+    cdb: SysCountersUi.CdbUi?,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(0.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        val cards: List<@Composable () -> Unit> = listOf(
+            {
+                InsideCardWithHelp(
+                    header = "CDB:",
+                    fields = listOf(
+                        cdb?.compactions?.let {
+                            FieldWithHelp("Compactions:", it, SysCountersUi.CdbUi.COMPACT_DESCRIPTION)
+                        },
+                        //cdb?.compaction?.let {
+                        //    FieldWithHelp("Compaction:", it.toUiModel(), SysCountersUi.CdbUi.COMPACTION_DESCRIPTION)
+                        //},
+                        cdb?.bootTime?.let {
+                            FieldWithHelp("Boot time:", "${it}", SysCountersUi.CdbUi.BOOT_TIME_DESCRIPTION)
+                        },
+                        cdb?.phase0Time?.let {
+                            FieldWithHelp("Phase 0 time:", "${it}", SysCountersUi.CdbUi.PHASE0_TIME_DESCRIPTION)
+                        },
+                        cdb?.phase1Time?.let {
+                            FieldWithHelp("Phase 1 time:", "${it}", SysCountersUi.CdbUi.PHASE1_TIME_DESCRIPTION)
+                        },
+                        cdb?.phase2Time?.let {
+                            FieldWithHelp("Phase 2 time:", "${it}", SysCountersUi.CdbUi.PHASE2_TIME_DESCRIPTION)
+                        }
+                    ),
+                    textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                )
+            }
+        )
+        OutlinedCards(
+            header = "CDB Counters:",
+            fields = emptyList(),
+            cards = cards,
+            textColor = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.surface,
+            show = false
+        )
+    }
+}
+
+
 
 @Composable
 fun Device(
@@ -64,20 +119,20 @@ fun Device(
                 InsideCardWithHelp(
                     header = "Devices:",
                     fields = listOf(
-                        device?.connect.let {
-                            FieldWithHelp("Connect:", it ?: "0", DeviceUi.CONNECT_DESCRIPTION)
+                        device?.connect?.let {
+                            FieldWithHelp("Connect:", it, DeviceUi.CONNECT_DESCRIPTION)
                         },
-                        device?.connectFailed.let {
-                            FieldWithHelp("Connect fail:", it ?: "0", DeviceUi.CONNECT_FAILED_DESCRIPTION)
+                        device?.connectFailed?.let {
+                            FieldWithHelp("Connect fail:", it, DeviceUi.CONNECT_FAILED_DESCRIPTION)
                         },
-                        device?.syncFrom.let {
-                            FieldWithHelp("Sync from:", it ?: "0", SysCountersUi.DeviceUi.SYNC_FROM_DESCRIPTION)
+                        device?.syncFrom?.let {
+                            FieldWithHelp("Sync from:", it, SysCountersUi.DeviceUi.SYNC_FROM_DESCRIPTION)
                         },
-                        device?.syncTo.let {
-                            FieldWithHelp("Sync to:", it ?: "0", SysCountersUi.DeviceUi.SYNC_TO_DESCRIPTION)
+                        device?.syncTo?.let {
+                            FieldWithHelp("Sync to:", it, SysCountersUi.DeviceUi.SYNC_TO_DESCRIPTION)
                         },
-                        device?.outOfSync.let {
-                            FieldWithHelp("Out of sync:", it ?: "0", SysCountersUi.DeviceUi.OUT_OF_SYNC_DESCRIPTION)
+                        device?.outOfSync?.let {
+                            FieldWithHelp("Out of sync:", it, SysCountersUi.DeviceUi.OUT_OF_SYNC_DESCRIPTION)
                         }
                     ),
                     textColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -113,23 +168,23 @@ fun Session(
                 InsideCardWithHelp(
                     header = "Sessions:",
                     fields = listOf(
-                        session?.total.let {
-                            FieldWithHelp("Total:", it ?: "0", SessionUi.TOTAL_DESCRIPTION)
+                        session?.total?.let {
+                            FieldWithHelp("Total:", it, SessionUi.TOTAL_DESCRIPTION)
                         },
-                        session?.netconfTotal.let {
-                            FieldWithHelp("Netconf total:", it ?: "0", SessionUi.NETCONF_TOTAL_DESCRIPTION)
+                        session?.netconfTotal?.let {
+                            FieldWithHelp("Netconf total:", it, SessionUi.NETCONF_TOTAL_DESCRIPTION)
                         },
-                        session?.restconfTotal.let {
-                            FieldWithHelp("Restconf total:", it ?: "0", SessionUi.RESTCONF_TOTAL_DESCRIPTION)
+                        session?.restconfTotal?.let {
+                            FieldWithHelp("Restconf total:", it, SessionUi.RESTCONF_TOTAL_DESCRIPTION)
                         },
-                        session?.jsonrpcTotal.let {
-                            FieldWithHelp("Jsonrpc total:", it ?: "0", SessionUi.JSONRPC_TOTAL_DESCRIPTION)
+                        session?.jsonrpcTotal?.let {
+                            FieldWithHelp("Jsonrpc total:", it, SessionUi.JSONRPC_TOTAL_DESCRIPTION)
                         },
-                        session?.snmpTotal.let {
-                            FieldWithHelp("Snmp total:", it ?: "0", SessionUi.SNMP_TOTAL_DESCRIPTION)
+                        session?.snmpTotal?.let {
+                            FieldWithHelp("Snmp total:", it, SessionUi.SNMP_TOTAL_DESCRIPTION)
                         },
-                        session?.cliTotal.let {
-                            FieldWithHelp("Cli total:", it ?: "0", SessionUi.CLI_TOTAL_DESCRIPTION)
+                        session?.cliTotal?.let {
+                            FieldWithHelp("Cli total:", it, SessionUi.CLI_TOTAL_DESCRIPTION)
                         }
                     ),
                     textColor = MaterialTheme.colorScheme.onSurfaceVariant,

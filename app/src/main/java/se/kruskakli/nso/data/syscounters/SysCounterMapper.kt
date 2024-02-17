@@ -52,7 +52,7 @@ fun ServiceConflicts.ServiceType.toUiModel(): SysCountersUi.ServiceConflictsUi.S
 
 fun CdbCounters.toUiModel(): SysCountersUi.CdbUi {
     return SysCountersUi.CdbUi(
-        compactions = compactions,
+        compactions = compactions?.let{it.toString()},
         compaction = compaction?.toUiModel(),
         bootTime = bootTime,
         phase0Time = phase0Time,
@@ -63,10 +63,10 @@ fun CdbCounters.toUiModel(): SysCountersUi.CdbUi {
 
 fun CdbCounters.Compaction.toUiModel(): SysCountersUi.CdbUi.CompactionUi {
     return SysCountersUi.CdbUi.CompactionUi(
-        ACdb = ACdb,
-        OCdb = OCdb,
-        SCdb = SCdb,
-        total = total
+        ACdb = ACdb?.let{it.toString()},
+        OCdb = OCdb?.let{it.toString()},
+        SCdb = SCdb?.let{it.toString()},
+        total = total?.let{it.toString()}
     )
 }
 
