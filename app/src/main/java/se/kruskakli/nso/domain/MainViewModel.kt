@@ -1,14 +1,22 @@
 package se.kruskakli.nso.domain
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.IOException
+import okio.buffer
+import okio.source
 import se.kruskakli.nso.data.NsoApi
 import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.alarms.toAlarmUi
@@ -18,6 +26,8 @@ import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
 import se.kruskakli.nso.data.debug.inet.toInetUi
 import se.kruskakli.nso.data.debug.processes.toProcessUi
+import se.kruskakli.nso.data.releasenote.ReleaseNote
+import se.kruskakli.nso.data.releasenote.TextPieceAdapter
 import se.kruskakli.nso.data.syscounters.toUiModel
 import se.kruskakli.nso.presentation.TabPage
 
@@ -42,6 +52,31 @@ class MainViewModel : ViewModel() {
 
     private val _passwd = MutableStateFlow("admin")
     val passwd: StateFlow<String> = _passwd.asStateFlow()
+
+    private val _releaseNotes = MutableStateFlow<List<ReleaseNote>>(emptyList())
+    val releaseNotes: StateFlow<List<ReleaseNote>> = _releaseNotes.asStateFlow()
+
+    fun loadReleaseNotes(json: String) {
+        viewModelScope.launch {
+            val notes = parseReleaseNotes(json)
+            _releaseNotes.value = notes
+        }
+    }
+
+    private fun parseReleaseNotes(json: String): List<ReleaseNote> {
+        val moshi = Moshi.Builder()
+            .add(TextPieceAdapter())
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+        val jsonAdapter = moshi.adapter<List<ReleaseNote>>(Types.newParameterizedType(List::class.java, ReleaseNote::class.java))
+
+        val relNotes = jsonAdapter.fromJson(json)
+        Log.d("MainViewModel", "Release notes: $relNotes")
+
+        return relNotes ?: emptyList()
+    }
+    
 
     private fun applySettings(settingsData: SettingsData) {
         _name.value = settingsData.name
@@ -500,6 +535,8 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+    
 
 }
 

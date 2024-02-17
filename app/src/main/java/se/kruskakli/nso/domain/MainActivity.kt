@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.IOException
 import se.kruskakli.nso.data.RetrofitInstance
 import se.kruskakli.nso.data.devices.toDeviceUi
 import se.kruskakli.nso.data.packages.toPackageUi
@@ -37,9 +38,27 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val viewModel: MainViewModel = viewModel()
+
+                    val json = loadJsonFromAssets("release_notes.json")
+                    viewModel.loadReleaseNotes(json)
+
                     HomeScreen(viewModel)
                 }
             }
+        }
+    }
+
+    private fun loadJsonFromAssets(fileName: String): String {
+        return try {
+            val inputStream = assets.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            String(buffer, Charsets.UTF_8)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            ""
         }
     }
 }

@@ -318,18 +318,20 @@ fun LoadingState() {
     }
 }
 
-/*
-   Prompt:
-   In my Jetpack Compose application I want to be able to create
-   simple text pieces to be displayed. I should be able to express:
-   paragraphs and bullet lists ,where the text should be of type
-   AnnotatedString. Create a composable for this with a data class
-   to represent the text.
- */
+/* 
 
-sealed class TextPiece {
-    data class Paragraph(val text: AnnotatedString) : TextPiece()
-    data class BulletList(val items: List<AnnotatedString>) : TextPiece()
+class TextPieceAdapter {
+    @FromJson
+    fun fromJson(reader: JsonReader): TextPiece {
+        val jsonAdapter = Moshi.Builder().build().adapter<Any>(Any::class.java)
+        val map = jsonAdapter.fromJson(reader) as Map<String, Any>
+
+        return when (map["type"] as String) {
+            "Paragraph" -> TextPiece.Paragraph(map["text"] as String)
+            "BulletList" -> TextPiece.BulletList(map["items"] as List<String>)
+            else -> throw IllegalArgumentException("Unknown type: ${map["type"]}")
+        }
+    }
 }
 
 @Composable
@@ -349,3 +351,5 @@ fun TextDisplay(textPieces: List<TextPiece>) {
         }
     }
 }
+
+*/

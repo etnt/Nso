@@ -1,0 +1,30 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2022-01-01",
+    "textPieces": [
+      {
+        "type": "Paragraph",
+        "text": "This is a paragraph."
+      },
+      {
+        "type": "BulletList",
+        "items": ["Item 1", "Item 2", "Item 3"]
+      }
+    ]
+  },
+  {
+    "version": "1.0.1",
+    "date": "2022-01-02",
+    "textPieces": [
+      {
+        "type": "Paragraph",
+        "text": "This is another paragraph."
+      },
+      {
+        "type": "BulletList",
+        "items": ["Item 4", "Item 5", "Item 6"]
+      }
+    ]
+  }
+]
