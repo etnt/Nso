@@ -318,3 +318,34 @@ fun LoadingState() {
     }
 }
 
+/*
+   Prompt:
+   In my Jetpack Compose application I want to be able to create
+   simple text pieces to be displayed. I should be able to express:
+   paragraphs and bullet lists ,where the text should be of type
+   AnnotatedString. Create a composable for this with a data class
+   to represent the text.
+ */
+
+sealed class TextPiece {
+    data class Paragraph(val text: AnnotatedString) : TextPiece()
+    data class BulletList(val items: List<AnnotatedString>) : TextPiece()
+}
+
+@Composable
+fun TextDisplay(textPieces: List<TextPiece>) {
+    Column {
+        textPieces.forEach { textPiece ->
+            when (textPiece) {
+                is TextPiece.Paragraph -> {
+                    Text(text = textPiece.text)
+                }
+                is TextPiece.BulletList -> {
+                    textPiece.items.forEach { item ->
+                        Text(text = "\u2022 ${item}")
+                    }
+                }
+            }
+        }
+    }
+}
