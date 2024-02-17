@@ -8,4 +8,6 @@ interface.
 Mainly it is an exercise in how to build an Android App using
 Kotlin and Jetpack Compose.
 
-A video demo can be found [here](https://youtu.be/L0OvMiudzYg?si=oBzF40lHQCoFxGcn).
+However, with release 0.2.0 it may actually be useful for some people.
+
+A video demo can be found [here](https://youtu.be/HsOm8Tvw75E?si=_nGcllmQeCNrTdbt).

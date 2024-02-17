@@ -60,6 +60,17 @@ See [also](https://developer.android.com/studio/write/vector-asset-studio#svg)
 * Add a new menu item in HomeScreen.kt
 * Add the new screen composable to view the data (e.g see AlarmsScreen.kt)
 
+## Prepare for release
+
+1. Update the release_notes.json
+2. Commit everything and set a tag, e.g:
+
+    git tag -a v0.2.0 -m "Release version 0.2.0"
+    git push --tags
+
+ 3. Build an APK and upload it to the Github release page.   
+
+
 ## Build an APK for sharing (outside Google Play)
 
 To create an Android App Bundle in Android Studio, follow these steps:
@@ -78,15 +89,22 @@ To generate APKs from an Android App Bundle using bundletool, follow these steps
 
     java -jar bundletool-all-1.15.6.jar build-apks --bundle=../AndroidStudioProjects/Nso/app/build/outputs/bundle/debug/app-debug.aab --output=nso_mobile_<version>.apks
 
-3. Extract APKs: The build-apks command generates a .apks file, which is a ZIP file that contains all the APKs for your app. To extract the APKs, you can rename the .apks file to .zip and extract it using any ZIP tool.
+3. Extract APKs: The build-apks command generates a .apks file, which is a ZIP file that contains all the APKs for your app. To extract the APKs, you can rename the .apks file to .zip and extract it using any ZIP tool. Unzipping the .apks file is not a necessary step for installing the app on a device. However, unzipping the .apks file can be useful for inspection purposes. The .apks file is a collection of APK files generated from your Android App Bundle. Each APK file in the .apks file represents a different configuration of your app (for example, different screen densities, CPU architectures, languages, etc.). 
 
 4. Install APKs: To install the APKs on a device, you can use the install-apks command (replace /MyApp/my_app.apks with the path to your .apks file):
 
-    java -jar bundletool-all-1.15.6.jar install-apks --apks=/MyApp/my_app.apks
+    java -jar bundletool-all-1.15.6.jar install-apks --apks=nso_mobile_0.2.0.apks
 
 
 Note: The device needs to be connected to your machine via USB and you need to have USB debugging enabled on the device.
 
+Got some errors here. Needed to specify a device id, which I found as:
 
+    ../Library/Android/sdk/platform-tools/adb devices
 
+Then:
+
+    java -jar bundletool-all-1.15.6.jar install-apks --apks=nso_mobile_0.2.0.apks --device-id=<device-id>
+
+Still didn't find the folder that the output indicated...need to look into this...
 
