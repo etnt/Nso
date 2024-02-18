@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -65,6 +66,7 @@ import se.kruskakli.presentation.RememberPackages
 import se.kruskakli.presentation.RememberAlarms
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.withStyle
@@ -336,7 +338,7 @@ fun CustomNestedMenu(
                 imageVector = item.selectedIcon,
                 contentDescription = item.title,
                 modifier = Modifier.size(20.dp),
-                tint = Color.Black
+                tint = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = item.title,
@@ -355,15 +357,22 @@ fun CustomNestedMenu(
                     imageVector = Icons.Filled.PlayArrow,
                     contentDescription = "SubItem",
                     modifier = Modifier.size(10.dp),
-                    tint = Color.Black
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 val text = AnnotatedString.Builder().apply {
-                    append(subItem.title)
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                            fontStyle = FontStyle.Italic,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    ) {
+                        append(subItem.title)
+                    }
                 }.toAnnotatedString()
                 ClickableText(
                     text = text,
                     onClick = { onClick(subItem.page) },
-                    style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
                         .padding(start = 10.dp)
                 )
