@@ -10,4 +10,9 @@ Kotlin and Jetpack Compose.
 
 However, with release 0.2.0 it may actually be useful for some people.
 
-A video demo can be found [here](https://youtu.be/HsOm8Tvw75E?si=_nGcllmQeCNrTdbt).
+A video demo of Nso-Mobile can be found [here](https://youtu.be/HsOm8Tvw75E?si=_nGcllmQeCNrTdbt).
+
+## StickyHeader
+
+I introduced a stickyHeader effect when scrolling the device list.
+Look at the demo [here](https://youtu.be/XHlT5SGGUPg?si=WuBUTA5nxJmdMEf6)
