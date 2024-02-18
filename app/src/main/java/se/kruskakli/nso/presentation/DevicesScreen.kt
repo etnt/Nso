@@ -1,5 +1,6 @@
 package se.kruskakli.nso.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,7 @@ fun DevicesScreen(
     Devices(nsoDevices)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Devices(
     devices: List<DeviceUi>,
@@ -55,9 +57,21 @@ fun Devices(
             horizontalAlignment = Alignment.Start
         ) {
             Divider()
+            val devicesWithVisibility = remember { devices.map { it to mutableStateOf(false) } }
             LazyColumn {
-                items(items = devices) {
-                    Device(it)
+                devicesWithVisibility.forEach { (device, show) ->
+                    stickyHeader {
+                        DeviceHeadField(
+                            device = device,
+                            toggleShow = { show.value = !show.value }
+                        )
+                    }
+                    item {
+                        if (show.value) {
+                            Device(device)
+                        }
+                    }
+                    item { Divider() }
                 }
             }
         }
@@ -69,9 +83,6 @@ fun Device(
     device: DeviceUi,
     modifier: Modifier = Modifier
 ) {
-    var show by remember { mutableStateOf(false) }
-    val toggleShow = { show = !show }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,47 +94,43 @@ fun Device(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            DeviceHeadField(device, toggleShow)
-            if (show) {
-                val fields = mutableListOf(
-                    Field("Last Connected", device.lastConnected),
-                    Field("Address", device.address),
-                    Field("Port", device.port),
-                    Field("Authgroup", device.authgroup),
-                    Field("Commit Queue Length", device.commitQueue.queueLength),
-                    Field("Oper State", device.state.operState),
-                    Field("Admin State", device.state.adminState)
-                )
-                device.state.transactionMode?.let {
-                    fields.add(Field("Transaction Mode", it))
-                }
-
-                val alarmFields = listOf(
-                    Field("Indeterminates", device.alarmSummary.indeterminates),
-                    Field("Criticals", device.alarmSummary.critical),
-                    Field("Majors", device.alarmSummary.major),
-                    Field("Minors", device.alarmSummary.minor),
-                    Field("Warnings", device.alarmSummary.warning)
-                )
-                
-                OutlinedCards(
-                    header = "Device Info:",
-                    fields = fields,
-                    cards = listOf {
-                        InsideCard(
-                            header = "Alarm Summary:",
-                            fields = alarmFields,
-                            textColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            modifier = Modifier
-                                .padding(start = 8.dp, end = 8.dp)
-                        )
-                    },
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    color = MaterialTheme.colorScheme.surface
-                )
+            val fields = mutableListOf(
+                Field("Last Connected", device.lastConnected),
+                Field("Address", device.address),
+                Field("Port", device.port),
+                Field("Authgroup", device.authgroup),
+                Field("Commit Queue Length", device.commitQueue.queueLength),
+                Field("Oper State", device.state.operState),
+                Field("Admin State", device.state.adminState)
+            )
+            device.state.transactionMode?.let {
+                fields.add(Field("Transaction Mode", it))
             }
-            Divider()
+
+            val alarmFields = listOf(
+                Field("Indeterminates", device.alarmSummary.indeterminates),
+                Field("Criticals", device.alarmSummary.critical),
+                Field("Majors", device.alarmSummary.major),
+                Field("Minors", device.alarmSummary.minor),
+                Field("Warnings", device.alarmSummary.warning)
+            )
+
+            OutlinedCards(
+                header = "Device Info:",
+                fields = fields,
+                cards = listOf {
+                    InsideCard(
+                        header = "Alarm Summary:",
+                        fields = alarmFields,
+                        textColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp)
+                    )
+                },
+                textColor = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.surface
+            )
         }
     }
 }
@@ -138,6 +145,7 @@ fun DeviceHeadField(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = { toggleShow() })
+            .background(MaterialTheme.colorScheme.background)
             .padding(6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
