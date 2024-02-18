@@ -50,29 +50,29 @@ sealed class TextPiece {
 }
 
 class TextPieceAdapter {
-  @FromJson
-  fun fromJson(reader: JsonReader): TextPiece {
-      var type: String? = null
-      var text: String? = null
-      var items: List<String>? = null
+    @FromJson
+    fun fromJson(reader: JsonReader): TextPiece {
+        var type: String? = null
+        var text: String? = null
+        var items: List<String>? = null
 
-      reader.beginObject()
-      while (reader.hasNext()) {
-          when (reader.nextName()) {
-              "type" -> type = reader.nextString()
-              "text" -> text = reader.nextString()
-              "items" -> items = reader.readJsonValue() as? List<String>
-          }
-      }
-      reader.endObject()
+        reader.beginObject()
+        while (reader.hasNext()) {
+            when (reader.nextName()) {
+                "type" -> type = reader.nextString()
+                "text" -> text = reader.nextString()
+                "items" -> items = reader.readJsonValue() as? List<String>
+            }
+        }
+        reader.endObject()
 
-      return when (type) {
-          "Paragraph" -> TextPiece.Paragraph(text ?: "")
-          "BulletList" -> TextPiece.BulletList(items ?: listOf())
-          else -> throw IllegalArgumentException("Unknown type of TextPiece")
-      }
-  }
-  @ToJson
+        return when (type) {
+            "Paragraph" -> TextPiece.Paragraph(text ?: "")
+            "BulletList" -> TextPiece.BulletList(items ?: listOf())
+            else -> throw IllegalArgumentException("Unknown type of TextPiece")
+        }
+    }
+    @ToJson
     fun toJson(writer: JsonWriter, textPiece: TextPiece) {
         writer.beginObject()
         when (textPiece) {

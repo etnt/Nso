@@ -15,4 +15,9 @@ A video demo of Nso-Mobile can be found [here](https://youtu.be/HsOm8Tvw75E?si=_
 ## StickyHeader
 
 I introduced a stickyHeader effect when scrolling the device list.
-Look at the demo [here](https://youtu.be/XHlT5SGGUPg?si=WuBUTA5nxJmdMEf6)
+Look at the demo [here](https://youtu.be/XHlT5SGGUPg?si=WuBUTA5nxJmdMEf6).
+
+## Adding Release Notes
+
+Adding release notes to the app was surprisingly tricky.
+A video explaining how it was done can be found [here](https://youtu.be/NFUxl8V0P0k).
