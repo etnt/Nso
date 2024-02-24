@@ -41,6 +41,9 @@ an ImageVector as: `ImageVector.vectorResource(id = R.drawable.ic_<name>)`
 
 See [also](https://developer.android.com/studio/write/vector-asset-studio#svg)
 
+If the SVG contains `text` elements then use the free online converter CloudConvert,
+to convert the SVG to another SVG, with marking their setting Text To Path to yes.
+
 
 ## Adding new data source
 
